@@ -1,9 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getFirestore, collection, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot, addDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 
-// Your web app's Firebase configuration
+// Firebase Configuration
 const firebaseConfig = {
     apiKey: "AIzaSyBqm3WSzAPGOQgUAd73bHtKY2VY1dXGj24",
     authDomain: "swaadse-in-website.firebaseapp.com",
@@ -14,7 +14,6 @@ const firebaseConfig = {
     measurementId: "G-JGHV6JWKF7"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
@@ -23,45 +22,298 @@ const auth = getAuth(app);
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
 // Initialize EmailJS
-emailjs.init('YOUR_PUBLIC_KEY'); // Replace with your EmailJS public key
+emailjs.init('YOUR_PUBLIC_KEY');
 
-// --- GLOBAL VARIABLES ---
-const menuContainer = document.getElementById('menu-container');
-const adminForm = document.getElementById('add-menu-item-form');
-const adminMessage = document.getElementById('admin-message');
+// ═══════════════════════════════════════════════════════════
+// GLOBAL VARIABLES & STATE MANAGEMENT
+// ═══════════════════════════════════════════════════════════
+
 let currentMenuItems = [];
 let unsubscribeMenuListener = null;
+let cart = [];
+let currentUser = null;
 
-// --- AUTHENTICATION LISTENER ---
+// Cart and UI elements
+const cartSidebar = document.getElementById('cart-sidebar');
+const cartOverlay = document.getElementById('cart-overlay');
+const cartIcon = document.getElementById('cart-icon');
+const cartClose = document.getElementById('cart-close');
+const cartItemsContainer = document.getElementById('cart-items');
+const cartTotalAmount = document.getElementById('cart-total');
+const cartCheckoutBtn = document.getElementById('cart-checkout-btn');
+const cartBadge = document.getElementById('cart-badge');
+
+// ═══════════════════════════════════════════════════════════
+// TOAST NOTIFICATIONS
+// ═══════════════════════════════════════════════════════════
+
+function showToast(message, type = 'success', duration = 3000) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
+}
+
+// ═══════════════════════════════════════════════════════════
+// CART MANAGEMENT
+// ═══════════════════════════════════════════════════════════
+
+function loadCart() {
+    const saved = localStorage.getItem('swaadse_cart');
+    cart = saved ? JSON.parse(saved) : [];
+    updateCartUI();
+}
+
+function saveCart() {
+    localStorage.setItem('swaadse_cart', JSON.stringify(cart));
+    updateCartUI();
+}
+
+function addToCart(item) {
+    if (!currentUser) {
+        showToast('Please sign in to add items to cart', 'warning');
+        return;
+    }
+
+    const existingItem = cart.find(c => c.name === item.name);
+    
+    if (existingItem) {
+        existingItem.qty++;
+    } else {
+        cart.push({
+            name: item.name,
+            price: item.price,
+            qty: 1,
+            id: item.id || item.name.replace(/\s+/g, '-')
+        });
+    }
+    
+    saveCart();
+    showToast(`${item.name} added to cart! ✓`, 'success');
+}
+
+function removeFromCart(itemName) {
+    cart = cart.filter(c => c.name !== itemName);
+    saveCart();
+    showToast('Item removed from cart', 'success');
+}
+
+function updateCartQuantity(itemName, qty) {
+    const item = cart.find(c => c.name === itemName);
+    if (item) {
+        if (qty <= 0) {
+            removeFromCart(itemName);
+        } else {
+            item.qty = qty;
+            saveCart();
+        }
+    }
+}
+
+function getCartTotal() {
+    return cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+}
+
+function getCartItemCount() {
+    return cart.reduce((sum, item) => sum + item.qty, 0);
+}
+
+function updateCartUI() {
+    const count = getCartItemCount();
+    const total = getCartTotal();
+    
+    // Update badge
+    if (count > 0) {
+        cartBadge.textContent = count;
+        cartBadge.style.display = 'flex';
+    } else {
+        cartBadge.style.display = 'none';
+    }
+    
+    // Update total
+    cartTotalAmount.textContent = `₹${total}`;
+    
+    // Update items display
+    if (cart.length === 0) {
+        cartItemsContainer.innerHTML = `
+            <div class="cart-empty">
+                <div class="cart-empty-icon">🛒</div>
+                <p>Your cart is empty</p>
+                <p style="font-size: 12px; margin-top: 8px;">Add items from the menu to get started</p>
+            </div>
+        `;
+        cartCheckoutBtn.style.display = 'none';
+    } else {
+        cartItemsContainer.innerHTML = cart.map(item => `
+            <div class="cart-item">
+                <div class="cart-item-info">
+                    <div class="cart-item-name">${item.name}</div>
+                    <div class="cart-item-price">₹${item.price}</div>
+                    <div class="cart-item-qty">
+                        <button class="qty-btn" onclick="window.updateQty('${item.name}', ${item.qty - 1})">−</button>
+                        <input type="number" class="qty-input" value="${item.qty}" 
+                               onchange="window.updateQty('${item.name}', this.value)" min="1">
+                        <button class="qty-btn" onclick="window.updateQty('${item.name}', ${item.qty + 1})">+</button>
+                    </div>
+                </div>
+                <button class="cart-item-remove" onclick="window.removeItem('${item.name}')">✕</button>
+            </div>
+        `).join('');
+        cartCheckoutBtn.style.display = 'block';
+    }
+}
+
+// Global functions for inline onclick handlers
+window.updateQty = (itemName, qty) => updateCartQuantity(itemName, parseInt(qty));
+window.removeItem = (itemName) => removeFromCart(itemName);
+
+function toggleCart() {
+    cartSidebar.classList.toggle('open');
+    cartOverlay.classList.toggle('open');
+}
+
+function closeCart() {
+    cartSidebar.classList.remove('open');
+    cartOverlay.classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAYMENT & CHECKOUT
+// ═══════════════════════════════════════════════════════════
+
+async function initiateCheckout() {
+    if (cart.length === 0) {
+        showToast('Your cart is empty', 'warning');
+        return;
+    }
+
+    if (!currentUser) {
+        showToast('Please sign in to checkout', 'warning');
+        return;
+    }
+
+    closeCart();
+    
+    // Get customer details (you can implement a checkout form here)
+    const name = currentUser.email || 'Customer';
+    const phone = prompt('Enter your phone number:');
+    
+    if (!phone) {
+        showToast('Phone number is required', 'error');
+        return;
+    }
+
+    const amount = getCartTotal();
+    
+    // Create order in Firebase first
+    try {
+        const orderRef = doc(collection(db, 'orders'));
+        const orderId = orderRef.id;
+        
+        const orderData = {
+            orderId: orderId,
+            items: cart.map(item => ({
+                name: item.name,
+                price: item.price,
+                qty: item.qty
+            })),
+            total: amount,
+            customerName: name,
+            customerPhone: phone,
+            customerEmail: currentUser.email,
+            status: 'pending',
+            timestamp: new Date().toISOString()
+        };
+
+        // Save order to Firebase
+        await setDoc(orderRef, orderData);
+
+        // Initialize Razorpay
+        const options = {
+            key: 'rzp_live_Vg9WXXXX', // Replace with your Razorpay key
+            amount: amount * 100, // Convert to paise
+            currency: 'INR',
+            name: 'SwaadSe.in',
+            description: 'Food Order',
+            order_id: orderId,
+            handler: async function(response) {
+                // Payment successful
+                orderData.status = 'completed';
+                orderData.paymentId = response.razorpay_payment_id;
+                orderData.razorpayOrderId = response.razorpay_order_id;
+                
+                await setDoc(orderRef, orderData);
+                
+                showToast('Payment successful! Order confirmed ✓', 'success');
+                cart = [];
+                saveCart();
+                
+                // Redirect to success page
+                setTimeout(() => {
+                    window.location.href = `/checkout/success?orderId=${orderId}`;
+                }, 1500);
+            },
+            prefill: {
+                name: name,
+                email: currentUser.email,
+                contact: phone
+            },
+            theme: {
+                color: '#c05e1e'
+            },
+            modal: {
+                ondismiss: function() {
+                    orderData.status = 'failed';
+                    setDoc(orderRef, orderData);
+                    showToast('Payment cancelled', 'error');
+                }
+            }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+
+    } catch (error) {
+        console.error('Checkout error:', error);
+        showToast('Error processing checkout. Please try again.', 'error');
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+// AUTHENTICATION
+// ═══════════════════════════════════════════════════════════
+
 onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    
     if (user) {
-        console.log("User is authenticated with UID:", user.uid);
+        console.log("User authenticated:", user.uid);
         setupMenuListener();
         setupAdminForm();
-        document.getElementById('menu-signin-prompt').classList.add('hidden');
-        document.getElementById('menu-container').classList.remove('hidden');
-        document.getElementById('sign-in-btn').classList.add('hidden');
-        document.getElementById('user-actions').classList.remove('hidden');
-        
-        // Show phone number when logged in
-        document.getElementById('phone-display').classList.add('hidden');
-        document.getElementById('phone-actual').classList.remove('hidden');
-        document.getElementById('login-prompt').classList.add('hidden');
+        document.getElementById('menu-signin-prompt')?.classList.add('hidden');
+        document.getElementById('menu-container')?.classList.remove('hidden');
+        document.getElementById('sign-in-btn')?.classList.add('hidden');
+        document.getElementById('user-actions')?.classList.remove('hidden');
     } else {
-        console.log("No user found");
-        document.getElementById('menu-signin-prompt').classList.remove('hidden');
-        document.getElementById('menu-container').classList.add('hidden');
-        document.getElementById('user-actions').classList.add('hidden');
-        document.getElementById('sign-in-btn').classList.remove('hidden');
-        
-        // Hide phone number when not logged in
-        document.getElementById('phone-display').classList.remove('hidden');
-        document.getElementById('phone-actual').classList.add('hidden');
-        document.getElementById('login-prompt').classList.remove('hidden');
+        console.log("No user authenticated");
+        document.getElementById('menu-signin-prompt')?.classList.remove('hidden');
+        document.getElementById('menu-container')?.classList.add('hidden');
+        document.getElementById('user-actions')?.classList.add('hidden');
+        document.getElementById('sign-in-btn')?.classList.remove('hidden');
     }
 });
 
-// --- DYNAMIC MENU DISPLAY ---
+// ═══════════════════════════════════════════════════════════
+// MENU & DATABASE
+// ═══════════════════════════════════════════════════════════
+
 function setupMenuListener() {
     const menuCollectionRef = collection(db, `artifacts/${appId}/public/data/menu`);
     if (unsubscribeMenuListener) {
@@ -69,7 +321,8 @@ function setupMenuListener() {
     }
     unsubscribeMenuListener = onSnapshot(menuCollectionRef, (snapshot) => {
         currentMenuItems = [];
-        menuContainer.innerHTML = ''; // Clear previous items
+        const menuContainer = document.getElementById('menu-container');
+        menuContainer.innerHTML = '';
 
         if (snapshot.empty) {
             menuContainer.innerHTML = `<p class="col-span-full text-center text-[#638792]">The menu for today is being prepared. Please check back soon!</p>`;
@@ -78,13 +331,12 @@ function setupMenuListener() {
         
         snapshot.forEach(doc => {
             const item = doc.data();
-            // Skip 'samosa', 'shahee paneer', 'shahi paneer' (case-insensitive, trimmed)
             const forbidden = ["samosa", "shahee paneer", "shahi paneer"];
             if (item.name && forbidden.includes(item.name.trim().toLowerCase())) {
                 return;
             }
-            currentMenuItems.push(item);
-            // Optionally, you can log or use the currentMenuItems array elsewhere as your menu list
+            currentMenuItems.push({ ...item, id: doc.id });
+            
             const menuItemEl = document.createElement('div');
             menuItemEl.className = "bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300";
             menuItemEl.innerHTML = `
@@ -95,21 +347,31 @@ function setupMenuListener() {
                 <div class="p-6">
                     <h3 class="text-xl font-bold font-serif text-[#8f5d3b] mb-2">${item.name}</h3>
                     <p class="text-[#638792] mb-4">${item.description}</p>
-                    <div class="text-2xl font-bold text-[#3c4548]">₹${item.price}</div>
+                    <div class="flex justify-between items-center">
+                        <div class="text-2xl font-bold text-[#3c4548]">₹${item.price}</div>
+                        <button class="btn btn-solid" style="padding: 8px 16px; font-size: 12px;" 
+                                onclick="window.addToCartFromMenu({name: '${item.name}', price: ${item.price}, id: '${doc.id}'})">
+                            Add to Cart
+                        </button>
+                    </div>
                 </div>
             `;
             menuContainer.appendChild(menuItemEl);
         });
         
     }, (error) => {
-        console.error("Firestore Permission Error: ", error);
-        menuContainer.innerHTML = `<p class="col-span-full text-center text-red-500">Could not load the menu due to an error.</p>`;
+        console.error("Firestore error:", error);
+        const menuContainer = document.getElementById('menu-container');
+        menuContainer.innerHTML = `<p class="col-span-full text-center text-red-500">Could not load the menu. Please try again later.</p>`;
     });
 }
 
+window.addToCartFromMenu = (item) => addToCart(item);
 
-// --- ADMIN PANEL LOGIC ---
 function setupAdminForm() {
+    const adminForm = document.getElementById('add-menu-item-form');
+    if (!adminForm) return;
+
     adminForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const submitBtn = document.getElementById('submit-menu-item');
@@ -125,59 +387,62 @@ function setupAdminForm() {
                 image: adminForm.itemImage.value.replace(/ /g, '+')
             });
             adminForm.reset();
+            const adminMessage = document.getElementById('admin-message');
             adminMessage.textContent = 'Menu item added successfully!';
             adminMessage.classList.remove('text-red-600');
             adminMessage.classList.add('text-green-600');
         } catch (error) {
-            console.error("Error adding document: ", error);
+            console.error("Error adding document:", error);
+            const adminMessage = document.getElementById('admin-message');
             adminMessage.textContent = 'Error adding item. Please check your Firebase rules.';
             adminMessage.classList.remove('text-green-600');
             adminMessage.classList.add('text-red-600');
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Add Item to Menu';
-            setTimeout(() => adminMessage.textContent = '', 3000);
+            setTimeout(() => {
+                const adminMessage = document.getElementById('admin-message');
+                adminMessage.textContent = '';
+            }, 3000);
         }
     });
 }
 
-// --- AUTH MODAL LOGIC ---
+// ═══════════════════════════════════════════════════════════
+// AUTHENTICATION FORMS & MODALS
+// ═══════════════════════════════════════════════════════════
+
+// Sign In Button
 const signInBtn = document.getElementById('sign-in-btn');
-signInBtn.addEventListener('click', () => {
-    document.getElementById('auth-modal').classList.remove('hidden');
+signInBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('auth-modal')?.classList.remove('hidden');
     document.getElementById('auth-title').textContent = 'Sign In';
     document.getElementById('auth-submit').textContent = 'Sign In';
     document.getElementById('toggle-auth').textContent = "Don't have an account? Sign Up";
-    document.getElementById('confirm-password-field').classList.add('hidden');
-    document.getElementById('password-strength-container').classList.add('hidden');
-    document.getElementById('remember-me-field').classList.remove('hidden');
-    document.getElementById('two-fa-field').classList.remove('hidden');
+    document.getElementById('confirm-password-field')?.classList.add('hidden');
+    document.getElementById('password-strength-container')?.classList.add('hidden');
+    document.getElementById('remember-me-field')?.classList.remove('hidden');
+    document.getElementById('two-fa-field')?.classList.remove('hidden');
 });
 
+// Close Auth Modal
 const closeAuthModal = document.getElementById('close-auth-modal');
-closeAuthModal.addEventListener('click', () => {
-    document.getElementById('auth-modal').classList.add('hidden');
+closeAuthModal?.addEventListener('click', () => {
+    document.getElementById('auth-modal')?.classList.add('hidden');
     resetAuthForm();
 });
-
-const menuSignin = document.getElementById('menu-signin');
-if (menuSignin) {
-    menuSignin.addEventListener('click', () => {
-        document.getElementById('auth-modal').classList.remove('hidden');
-    });
-}
 
 // Password visibility toggle
 const togglePasswordBtn = document.getElementById('toggle-password');
 const passwordInput = document.getElementById('password');
-togglePasswordBtn.addEventListener('click', () => {
+togglePasswordBtn?.addEventListener('click', () => {
     const type = passwordInput.type === 'password' ? 'text' : 'password';
     passwordInput.type = type;
-    document.getElementById('password-eye').textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
 });
 
-// Email validation feedback
-document.getElementById('email').addEventListener('input', (e) => {
+// Email validation
+document.getElementById('email')?.addEventListener('input', (e) => {
     const email = e.target.value;
     const feedback = document.getElementById('email-feedback');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -193,7 +458,7 @@ document.getElementById('email').addEventListener('input', (e) => {
     }
 });
 
-// Password strength indicator
+// Password strength check
 function checkPasswordStrength(password) {
     let strength = 0;
     if (password.length >= 8) strength++;
@@ -203,40 +468,40 @@ function checkPasswordStrength(password) {
     return strength;
 }
 
-document.getElementById('password').addEventListener('input', (e) => {
-    if (!isSignUp) return;
+document.getElementById('password')?.addEventListener('input', (e) => {
     const password = e.target.value;
     const feedback = document.getElementById('password-feedback');
     const strengthContainer = document.getElementById('password-strength-container');
     
     if (password === '') {
         feedback.textContent = '';
-        strengthContainer.classList.add('hidden');
+        strengthContainer?.classList.add('hidden');
         return;
     }
     
-    strengthContainer.classList.remove('hidden');
+    strengthContainer?.classList.remove('hidden');
     const strength = checkPasswordStrength(password);
     const strengthText = document.getElementById('strength-text');
     const bars = ['strength-bar-1', 'strength-bar-2', 'strength-bar-3', 'strength-bar-4'];
     
-    // Reset bars
     bars.forEach(bar => {
-        document.getElementById(bar).style.backgroundColor = '#d1d5db';
+        const el = document.getElementById(bar);
+        if (el) el.style.backgroundColor = '#d1d5db';
     });
     
-    // Set strength indicators
     const strengthLevels = ['Weak', 'Fair', 'Good', 'Strong'];
     const strengthColors = ['#dc2626', '#ea580c', '#eab308', '#16a34a'];
     
     for (let i = 0; i < strength; i++) {
-        document.getElementById(bars[i]).style.backgroundColor = strengthColors[i];
+        const el = document.getElementById(bars[i]);
+        if (el) el.style.backgroundColor = strengthColors[i];
     }
     
-    strengthText.textContent = strengthLevels[strength - 1] || 'Very Weak';
-    strengthText.style.color = strengthColors[strength - 1] || '#dc2626';
+    if (strengthText) {
+        strengthText.textContent = strengthLevels[strength - 1] || 'Very Weak';
+        strengthText.style.color = strengthColors[strength - 1] || '#dc2626';
+    }
     
-    // Validation feedback
     if (password.length < 8) {
         feedback.textContent = 'At least 8 characters required';
         feedback.style.color = '#dc2626';
@@ -250,114 +515,38 @@ document.getElementById('password').addEventListener('input', (e) => {
         feedback.textContent = '✓ Good password';
         feedback.style.color = '#16a34a';
     }
-    
-    // Check confirm password match
-    const confirmPasswordField = document.getElementById('confirm-password');
-    if (confirmPasswordField.value) {
-        validateConfirmPassword();
-    }
 });
 
-// Confirm password validation
-function validateConfirmPassword() {
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirm-password').value;
-    const feedback = document.getElementById('confirm-feedback');
-    
-    if (confirmPassword === '') {
-        feedback.textContent = '';
-        return true;
-    }
-    
-    if (password === confirmPassword) {
-        feedback.textContent = '✓ Passwords match';
-        feedback.style.color = '#16a34a';
-        return true;
-    } else {
-        feedback.textContent = '✗ Passwords do not match';
-        feedback.style.color = '#dc2626';
-        return false;
-    }
-}
-
-document.getElementById('confirm-password').addEventListener('input', validateConfirmPassword);
-
-// Auth form toggle (Sign Up / Sign In)
-let isSignUp = false;
-const toggleAuth = document.getElementById('toggle-auth');
-toggleAuth.addEventListener('click', (e) => {
-    e.preventDefault();
-    isSignUp = !isSignUp;
-    if (isSignUp) {
-        document.getElementById('auth-title').textContent = 'Create Account';
-        document.getElementById('auth-submit').textContent = 'Sign Up';
-        toggleAuth.textContent = 'Already have an account? Sign In';
-        document.getElementById('confirm-password-field').classList.remove('hidden');
-        document.getElementById('password-strength-container').classList.remove('hidden');
-        document.getElementById('remember-me-field').classList.add('hidden');
-        document.getElementById('two-fa-field').classList.add('hidden');
-    } else {
-        document.getElementById('auth-title').textContent = 'Sign In';
-        document.getElementById('auth-submit').textContent = 'Sign In';
-        toggleAuth.textContent = "Don't have an account? Sign Up";
-        document.getElementById('confirm-password-field').classList.add('hidden');
-        document.getElementById('password-strength-container').classList.add('hidden');
-        document.getElementById('remember-me-field').classList.remove('hidden');
-        document.getElementById('two-fa-field').classList.remove('hidden');
-    }
-    resetAuthForm();
-});
-
-function resetAuthForm() {
-    document.getElementById('auth-form').reset();
-    document.getElementById('auth-message').textContent = '';
-    document.getElementById('email-feedback').textContent = '';
-    document.getElementById('password-feedback').textContent = '';
-    document.getElementById('confirm-feedback').textContent = '';
-    document.getElementById('password-strength-container').classList.add('hidden');
-}
-
-// Enhanced auth form submission
+// Auth form submission
+let window.isSignUp = false;
 const authForm = document.getElementById('auth-form');
-authForm.addEventListener('submit', async (e) => {
+authForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const authMessage = document.getElementById('auth-message');
     const submitBtn = document.getElementById('auth-submit');
     
-    // Validation
     if (!email || !password) {
         authMessage.textContent = 'Please fill in all required fields';
         authMessage.style.color = '#dc2626';
         return;
     }
     
-    if (isSignUp) {
+    if (window.isSignUp) {
         const confirmPassword = document.getElementById('confirm-password').value;
-        if (!confirmPassword) {
-            authMessage.textContent = 'Please confirm your password';
-            authMessage.style.color = '#dc2626';
-            return;
-        }
         if (password !== confirmPassword) {
             authMessage.textContent = 'Passwords do not match';
-            authMessage.style.color = '#dc2626';
-            return;
-        }
-        const strength = checkPasswordStrength(password);
-        if (strength < 2) {
-            authMessage.textContent = 'Password is too weak. Please use a stronger password';
             authMessage.style.color = '#dc2626';
             return;
         }
     }
     
     submitBtn.disabled = true;
-    submitBtn.textContent = isSignUp ? 'Creating account...' : 'Signing in...';
+    submitBtn.textContent = window.isSignUp ? 'Creating account...' : 'Signing in...';
     
     try {
-        if (isSignUp) {
+        if (window.isSignUp) {
             await createUserWithEmailAndPassword(auth, email, password);
             authMessage.textContent = 'Account created successfully! 🎉';
             authMessage.style.color = '#16a34a';
@@ -365,11 +554,12 @@ authForm.addEventListener('submit', async (e) => {
             await signInWithEmailAndPassword(auth, email, password);
             authMessage.textContent = 'Signed in successfully! Welcome back 👋';
             authMessage.style.color = '#16a34a';
+            loadCart();
         }
         setTimeout(() => {
-            document.getElementById('auth-modal').classList.add('hidden');
+            document.getElementById('auth-modal')?.classList.add('hidden');
             resetAuthForm();
-            isSignUp = false;
+            window.isSignUp = false;
         }, 2000);
     } catch (error) {
         authMessage.textContent = error.message;
@@ -377,99 +567,145 @@ authForm.addEventListener('submit', async (e) => {
         console.error("Auth error:", error);
     } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = isSignUp ? 'Sign Up' : 'Sign In';
+        submitBtn.textContent = window.isSignUp ? 'Sign Up' : 'Sign In';
     }
 });
 
+// Sign Out
 const signOutBtn = document.getElementById('sign-out-btn');
-signOutBtn.addEventListener('click', async () => {
+signOutBtn?.addEventListener('click', async () => {
     await signOut(auth);
-    document.getElementById('user-actions').classList.add('hidden');
-    document.getElementById('sign-in-btn').classList.remove('hidden');
+    cart = [];
+    localStorage.removeItem('swaadse_cart');
+    document.getElementById('user-actions')?.classList.add('hidden');
+    document.getElementById('sign-in-btn')?.classList.remove('hidden');
 });
 
-// Phone section login button
-const loginPromptBtn = document.querySelector('#login-prompt button');
-if (loginPromptBtn) {
-    loginPromptBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById('auth-modal').classList.remove('hidden');
+// Toggle auth mode
+const toggleAuth = document.getElementById('toggle-auth');
+toggleAuth?.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.isSignUp = !window.isSignUp;
+    if (window.isSignUp) {
+        document.getElementById('auth-title').textContent = 'Create Account';
+        document.getElementById('auth-submit').textContent = 'Sign Up';
+        toggleAuth.textContent = 'Already have an account? Sign In';
+        document.getElementById('confirm-password-field')?.classList.remove('hidden');
+        document.getElementById('password-strength-container')?.classList.remove('hidden');
+        document.getElementById('remember-me-field')?.classList.add('hidden');
+        document.getElementById('two-fa-field')?.classList.add('hidden');
+    } else {
         document.getElementById('auth-title').textContent = 'Sign In';
         document.getElementById('auth-submit').textContent = 'Sign In';
-        isSignUp = false;
-    });
-}
-
-// --- GEMINI API: GENERATE DESCRIPTION ---
-const generateDescBtn = document.getElementById('generate-description-btn');
-const itemNameInput = document.getElementById('itemName');
-const itemDescTextarea = document.getElementById('itemDescription');
-
-generateDescBtn.addEventListener('click', async () => {
-    const itemName = itemNameInput.value;
-    if (!itemName) {
-        alert("Please enter an item name first.");
-        return;
+        toggleAuth.textContent = "Don't have an account? Sign Up";
+        document.getElementById('confirm-password-field')?.classList.add('hidden');
+        document.getElementById('password-strength-container')?.classList.add('hidden');
+        document.getElementById('remember-me-field')?.classList.remove('hidden');
+        document.getElementById('two-fa-field')?.classList.remove('hidden');
     }
-
-    generateDescBtn.disabled = true;
-    generateDescBtn.textContent = '...';
-    
-    const prompt = `Write a short, appealing, and delicious-sounding description for a home-cooked Indian dish named "${itemName}". The description should be about 20-25 words long and suitable for a food website menu.`;
-    
-    try {
-        const apiKey = "AIzaSyAECHdP5_6EpsPPY1Jf4MWBAPgHmyaXfsI";
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
-        
-        const payload = { contents: [{ parts: [{ text: prompt }] }] };
-
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-            throw new Error(`API call failed with status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        
-        if (result.candidates && result.candidates[0].content.parts[0].text) {
-            itemDescTextarea.value = result.candidates[0].content.parts[0].text;
-        } else {
-            throw new Error("Invalid response structure from API.");
-        }
-
-    } catch (error) {
-        console.error("Gemini description generation failed:", error);
-        alert("Could not generate description. Please try again or write one manually.");
-    } finally {
-        generateDescBtn.disabled = false;
-        generateDescBtn.innerHTML = '✨ Auto-generate';
-    }
+    resetAuthForm();
 });
 
-// --- GEMINI API: WEEKLY PLANNER ---
-const plannerModal = document.getElementById('planner-modal');
-const showPlannerBtn = document.getElementById('show-weekly-planner-btn');
-const closeModalBtn = document.getElementById('close-modal-btn');
-const modalContent = document.getElementById('modal-content');
-const modalLoader = document.getElementById('modal-loader');
+function resetAuthForm() {
+    const authForm = document.getElementById('auth-form');
+    authForm?.reset();
+    const authMessage = document.getElementById('auth-message');
+    if (authMessage) authMessage.textContent = '';
+}
 
-showPlannerBtn.addEventListener('click', async () => {
-    plannerModal.classList.remove('hidden');
-    modalContent.innerHTML = ''; 
+// ═══════════════════════════════════════════════════════════
+// CART EVENT LISTENERS
+// ═══════════════════════════════════════════════════════════
+
+cartIcon?.addEventListener('click', toggleCart);
+cartClose?.addEventListener('click', closeCart);
+cartOverlay?.addEventListener('click', closeCart);
+cartCheckoutBtn?.addEventListener('click', initiateCheckout);
+
+// ═══════════════════════════════════════════════════════════
+// PAGE INITIALIZATION
+// ═══════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadCart();
+    
+    // Scroll reveal
+    const revealObserver = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) { 
+                e.target.classList.add('in'); 
+                revealObserver.unobserve(e.target); 
+            }
+        });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // Mobile nav
+    const hamburger = document.getElementById('hamburger-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    hamburger?.addEventListener('click', () => mobileMenu?.classList.toggle('open'));
+    mobileMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu?.classList.remove('open')));
+
+    // Language toggle
+    document.getElementById('lang-select')?.addEventListener('change', function () {
+        document.getElementById('about-en').style.display = this.value === 'hi' ? 'none' : '';
+        document.getElementById('about-hi').style.display = this.value === 'hi' ? '' : 'none';
+    });
+
+    // Modal helpers
+    const openModal = id => document.getElementById(id)?.classList.remove('hidden');
+    const closeModal = id => document.getElementById(id)?.classList.add('hidden');
+
+    document.getElementById('close-modal-btn')?.addEventListener('click', () => closeModal('planner-modal'));
+    document.getElementById('close-order-modal')?.addEventListener('click', () => closeModal('order-modal'));
+
+    ['planner-modal', 'auth-modal', 'order-modal'].forEach(id => {
+        document.getElementById(id)?.addEventListener('click', e => { 
+            if (e.target.id === id) closeModal(id); 
+        });
+    });
+
+    document.getElementById('show-weekly-planner-btn')?.addEventListener('click', () => openModal('planner-modal'));
+    document.getElementById('menu-signin')?.addEventListener('click', () => openModal('auth-modal'));
+
+    // Pricing toggle
+    window.togglePricing = (type) => {
+        const weeklyPricing = document.getElementById('weekly-pricing');
+        const monthlyPricing = document.getElementById('monthly-pricing');
+        const buttons = document.querySelectorAll('.toggle-btn');
+
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        if (type === 'weekly') {
+            weeklyPricing.style.display = 'grid';
+            monthlyPricing.style.display = 'none';
+        } else {
+            weeklyPricing.style.display = 'none';
+            monthlyPricing.style.display = 'grid';
+        }
+    };
+});
+
+// Weekly Planner
+const showPlannerBtn = document.getElementById('show-weekly-planner-btn');
+showPlannerBtn?.addEventListener('click', async () => {
+    const plannerModal = document.getElementById('planner-modal');
+    const modalContent = document.getElementById('modal-content');
+    const modalLoader = document.getElementById('modal-loader');
+    
+    plannerModal?.classList.remove('hidden');
+    modalContent.innerHTML = '';
     modalLoader.style.display = 'flex';
 
     const dishNames = currentMenuItems.map(item => item.name).join(', ');
     if (!dishNames) {
-         modalContent.innerHTML = `<p class="text-center text-[#638792]">The menu is currently empty. Please add some dishes first to get a suggestion!</p>`;
-         modalLoader.style.display = 'none';
-         return;
+        modalContent.innerHTML = `<p style="text-align: center; color: #638792;">The menu is currently empty. Please add some dishes first!</p>`;
+        modalLoader.style.display = 'none';
+        return;
     }
 
-    const prompt = `You are a friendly meal planner for a home kitchen called "SwaadSe.in". Given the following available dishes: ${dishNames}. Create a balanced and interesting weekly meal plan suggestion (Monday to Friday) for a customer. Present it in a simple, clean HTML format using h4 for days and p for the dish. Do not include any other text, just the HTML.`;
+    const prompt = `Create a balanced weekly meal plan (Mon-Fri) using these dishes: ${dishNames}. Format as simple HTML with h4 for days and p for dishes.`;
 
     try {
         const apiKey = "AIzaSyAECHdP5_6EpsPPY1Jf4MWBAPgHmyaXfsI";
@@ -492,100 +728,59 @@ showPlannerBtn.addEventListener('click', async () => {
         }
 
     } catch (error) {
-        console.error("Gemini planner generation failed:", error);
-        modalContent.innerHTML = `<p class="text-center text-red-600">Sorry, we couldn't generate a meal plan right now. Please try again later.</p>`;
+        console.error("Planner generation failed:", error);
+        modalContent.innerHTML = `<p style="text-align: center; color: #dc2626;">Could not generate a meal plan. Please try again later.</p>`;
     } finally {
         modalLoader.style.display = 'none';
     }
 });
 
-closeModalBtn.addEventListener('click', () => {
-    plannerModal.classList.add('hidden');
-});
-
-// --- ORDER MODAL LOGIC ---
-const orderBtn = document.getElementById('order-btn');
-orderBtn.addEventListener('click', () => {
-    if (!auth.currentUser) {
-        alert('Please sign in to place an order.');
+// Description generator
+const generateDescBtn = document.getElementById('generate-description-btn');
+generateDescBtn?.addEventListener('click', async () => {
+    const itemName = document.getElementById('itemName').value;
+    if (!itemName) {
+        showToast('Please enter an item name first', 'warning');
         return;
     }
-    document.getElementById('order-modal').classList.remove('hidden');
-    populateOrderItems();
-});
 
-function populateOrderItems() {
-    const orderItems = document.getElementById('order-items');
-    orderItems.innerHTML = '';
-    currentMenuItems.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'flex items-center';
-        div.innerHTML = `
-            <input type="checkbox" id="item-${item.name.replace(/\s+/g, '-')}" value="${item.name}" class="mr-2">
-            <label for="item-${item.name.replace(/\s+/g, '-')}" class="text-[#7a6c5d]">${item.name} - ₹${item.price}</label>
-            <input type="number" min="1" value="1" class="ml-2 w-16 rounded border-[#f7b267]">
-        `;
-        orderItems.appendChild(div);
-    });
-}
-
-const closeOrderModal = document.getElementById('close-order-modal');
-closeOrderModal.addEventListener('click', () => {
-    document.getElementById('order-modal').classList.add('hidden');
-});
-
-const orderForm = document.getElementById('order-form');
-orderForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = document.getElementById('order-name').value;
-    const phone = document.getElementById('order-phone').value;
-    const email = document.getElementById('order-email').value;
-    const message = document.getElementById('order-message').value;
-    const selectedItems = [];
-    currentMenuItems.forEach(item => {
-        const checkbox = document.getElementById(`item-${item.name.replace(/\s+/g, '-')}`);
-        if (checkbox.checked) {
-            const qtyInput = checkbox.nextElementSibling.nextElementSibling;
-            const qty = qtyInput.value;
-            selectedItems.push(`${item.name} x${qty} - ₹${item.price * qty}`);
-        }
-    });
-    if (selectedItems.length === 0) {
-        alert('Please select at least one item.');
-        return;
-    }
-    const orderDetails = {
-        name,
-        phone,
-        email,
-        items: selectedItems.join(', '),
-        message
-    };
-    // Send email using EmailJS
+    generateDescBtn.disabled = true;
+    generateDescBtn.textContent = '...';
+    
+    const prompt = `Write a short, appealing description for a home-cooked Indian dish named "${itemName}". About 20-25 words.`;
+    
     try {
-        await emailjs.send(
-            'YOUR_SERVICE_ID', // replace with your service ID
-            'YOUR_TEMPLATE_ID', // replace with your template ID
-            {
-                to_email: 'your-email@example.com', // owner's email
-                from_name: name,
-                from_email: email,
-                subject: 'New Order from SwaadSe.in',
-                message: `Name: ${name}\nPhone: ${phone}\nEmail: ${email}\nItems: ${selectedItems.join(', ')}\nInstructions: ${message}`
-            },
-            'YOUR_PUBLIC_KEY' // replace with your public key
-        );
-        document.getElementById('order-message').textContent = 'Order placed successfully! We will contact you soon.';
-        document.getElementById('order-message').classList.remove('text-red-600');
-        document.getElementById('order-message').classList.add('text-green-600');
-        orderForm.reset();
-        setTimeout(() => {
-            document.getElementById('order-modal').classList.add('hidden');
-        }, 3000);
+        const apiKey = "AIzaSyAECHdP5_6EpsPPY1Jf4MWBAPgHmyaXfsI";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+        
+        const payload = { contents: [{ parts: [{ text: prompt }] }] };
+
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            throw new Error(`API call failed with status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        
+        if (result.candidates && result.candidates[0].content.parts[0].text) {
+            document.getElementById('itemDescription').value = result.candidates[0].content.parts[0].text;
+            showToast('Description generated successfully!', 'success');
+        } else {
+            throw new Error("Invalid response structure from API.");
+        }
+
     } catch (error) {
-        console.error('Email send failed:', error);
-        document.getElementById('order-message').textContent = 'Failed to place order. Please try again.';
-        document.getElementById('order-message').classList.remove('text-green-600');
-        document.getElementById('order-message').classList.add('text-red-600');
+        console.error("Description generation failed:", error);
+        showToast('Could not generate description. Please try again.', 'error');
+    } finally {
+        generateDescBtn.disabled = false;
+        generateDescBtn.innerHTML = '✨ Auto-generate';
     }
 });
+
+console.log('✓ Swaadse.in cart and payment system loaded successfully!');

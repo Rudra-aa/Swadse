@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmed - SwaadSe.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1a0e05;
+      --ember: #c05e1e;
+      --sand: #fdf6ec;
+      --cream: #fffcf7;
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--sand);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .success-container {
+      background: var(--cream);
+      border: 1px solid rgba(192,94,30,.15);
+      border-radius: 12px;
+      padding: 60px 40px;
+      text-align: center;
+      max-width: 520px;
+      box-shadow: 0 8px 32px rgba(26,14,5,.14);
+    }
+
+    .success-icon {
+      font-size: 80px;
+      margin-bottom: 24px;
+      animation: bounce 1s ease infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .success-title {
+      font-family: var(--serif);
+      font-size: 2rem;
+      margin-bottom: 12px;
+      color: var(--ink);
+    }
+
+    .success-subtitle {
+      font-size: 16px;
+      color: #7a5c40;
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .order-details {
+      background: var(--sand);
+      border: 1px solid rgba(192,94,30,.1);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 32px 0;
+      text-align: left;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(192,94,30,.1);
+      font-size: 14px;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-label {
+      color: #7a5c40;
+      font-weight: 500;
+    }
+
+    .detail-value {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .success-message {
+      background: #f0faf4;
+      border-left: 4px solid #16a34a;
+      padding: 16px;
+      border-radius: 6px;
+      margin: 24px 0;
+      font-size: 14px;
+      color: #2a6644;
+    }
+
+    .success-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 32px;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 14px;
+    }
+
+    .btn-primary {
+      background: var(--ember);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #8f4211;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--ember);
+      border: 2px solid var(--ember);
+    }
+
+    .btn-secondary:hover {
+      background: var(--ember);
+      color: #fff;
+    }
+
+    .contact-info {
+      background: var(--sand);
+      border: 1px solid rgba(192,94,30,.1);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 24px 0;
+      font-size: 13px;
+    }
+
+    .contact-info strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--ink);
+    }
+
+    @media (max-width: 480px) {
+      .success-container {
+        padding: 40px 20px;
+      }
+
+      .success-icon {
+        font-size: 60px;
+      }
+
+      .success-title {
+        font-size: 1.5rem;
+      }
+
+      .success-actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="success-container">
+  <div class="success-icon">✓</div>
+  <h1 class="success-title">Order Confirmed!</h1>
+  <p class="success-subtitle">Thank you for your order. We're preparing your delicious meal with love!</p>
+
+  <div class="order-details">
+    <div class="detail-row">
+      <span class="detail-label">Order ID:</span>
+      <span class="detail-value" id="order-id">—</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Payment Status:</span>
+      <span class="detail-value" style="color: #16a34a;">✓ Completed</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Estimated Delivery:</span>
+      <span class="detail-value" id="delivery-time">—</span>
+    </div>
+  </div>
+
+  <div class="success-message">
+    💬 We'll contact you on WhatsApp with updates about your order. Keep your phone handy!
+  </div>
+
+  <div class="contact-info">
+    <strong>Need Help?</strong>
+    📞 Call/WhatsApp: +91 [Your Number]<br>
+    📧 Email: arjunthakurr420@gmail.com<br>
+    📍 Kitchen: DD Nagar, Gwalior, MP 474001
+  </div>
+
+  <div class="success-actions">
+    <a href="/" class="btn btn-primary">Back to Menu</a>
+    <a href="#" class="btn btn-secondary" onclick="copyOrderId(); return false;">Copy Order ID</a>
+  </div>
+</div>
+
+<script>
+  function getUrlParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  function getDeliveryTime() {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() + 30); // 30 min from now
+    return now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function copyOrderId() {
+    const orderId = document.getElementById('order-id').textContent;
+    navigator.clipboard.writeText(orderId);
+    alert('Order ID copied to clipboard!');
+  }
+
+  // Initialize page
+  document.addEventListener('DOMContentLoaded', () => {
+    const orderId = getUrlParameter('orderId') || 'SWD-' + Date.now();
+    document.getElementById('order-id').textContent = orderId;
+    document.getElementById('delivery-time').textContent = getDeliveryTime();
+  });
+</script>
+</body>
+</html>
