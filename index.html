@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SwaadSe.in — Authentic Home Kitchen</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────── */
+    :root {
+      --ink:        #1a0e05;
+      --ink-soft:   #3d2510;
+      --ember:      #c05e1e;
+      --ember-dark: #8f4211;
+      --ember-glow: #e8803d;
+      --sand:       #fdf6ec;
+      --sand-warm:  #f5e8d0;
+      --cream:      #fffcf7;
+      --muted:      #7a5c40;
+      --muted-lite: #a87d5a;
+
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans:  'Plus Jakarta Sans', sans-serif;
+
+      --rad: 6px;
+      --rad-lg: 12px;
+
+      --shadow-sm: 0 2px 12px rgba(26,14,5,.08);
+      --shadow-md: 0 8px 32px rgba(26,14,5,.14);
+      --shadow-lg: 0 20px 60px rgba(26,14,5,.20);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--sand);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; }
+
+    /* ─── Utilities ──────────────────────────────────────── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .section-pad { padding: 96px 0; }
+    .text-center { text-align: center; }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 14px;
+    }
+
+    .display-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--ink);
+    }
+
+    .display-title.light { color: var(--cream); }
+
+    .subtitle {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.75;
+      color: var(--muted);
+      max-width: 560px;
+    }
+
+    .rule {
+      width: 48px; height: 3px;
+      background: var(--ember);
+      border-radius: 2px;
+      margin: 20px auto 0;
+    }
+    .rule.left { margin-left: 0; }
+
+    /* ─── Buttons ────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      border: none; cursor: pointer;
+      border-radius: var(--rad);
+      padding: 13px 28px;
+      transition: all .22s ease;
+      white-space: nowrap;
+    }
+
+    .btn-solid {
+      background: var(--ember);
+      color: #fff;
+    }
+    .btn-solid:hover { background: var(--ember-dark); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--cream);
+      border: 2px solid rgba(255,255,255,.45);
+    }
+    .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,.12); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--ember);
+      border: 2px solid var(--ember);
+    }
+    .btn-ghost:hover { background: var(--ember); color: #fff; }
+
+    .btn-dark {
+      background: var(--ink);
+      color: var(--cream);
+    }
+    .btn-dark:hover { background: var(--ink-soft); transform: translateY(-2px); }
+
+    /* ─── Header ─────────────────────────────────────────── */
+    #site-header {
+      position: sticky; top: 0; z-index: 900;
+      background: rgba(255,252,247,.96);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(192,94,30,.15);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 20px;
+      max-width: 1200px; margin: 0 auto;
+    }
+
+    .logo {
+      font-family: var(--serif);
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--ember);
+      letter-spacing: -.01em;
+    }
+
+    .logo span { color: var(--muted-lite); font-weight: 400; }
+
+    nav.desktop-nav { display: flex; align-items: center; gap: 36px; }
+
+    nav.desktop-nav a {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: .03em;
+      transition: color .2s;
+    }
+    nav.desktop-nav a:hover { color: var(--ember); }
+
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+
+    #user-actions { display: none; align-items: center; gap: 12px; }
+    #user-actions.visible { display: flex; }
+
+    #sign-out-btn {
+      font-size: 13px; font-weight: 500; color: var(--muted);
+      background: none; border: none; cursor: pointer;
+      transition: color .2s;
+    }
+    #sign-out-btn:hover { color: var(--ember); }
+
+    .hamburger {
+      display: none;
+      flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--ink-soft); border-radius: 2px;
+      transition: all .25s;
+    }
+
+    #mobile-menu {
+      display: none;
+      background: var(--cream);
+      border-top: 1px solid rgba(192,94,30,.12);
+      padding: 12px 24px 20px;
+    }
+    #mobile-menu.open { display: block; }
+    #mobile-menu a {
+      display: block;
+      padding: 14px 0;
+      font-size: 15px; font-weight: 500;
+      color: var(--ink-soft);
+      border-bottom: 1px solid rgba(192,94,30,.1);
+      transition: color .2s;
+    }
+    #mobile-menu a:last-child { border-bottom: none; }
+    #mobile-menu a:hover { color: var(--ember); }
+
+    /* ─── Hero ───────────────────────────────────────────── */
+    #home {
+      position: relative;
+      min-height: 90vh;
+      display: flex; align-items: flex-end;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: blur(8px) brightness(0.95);
+      transform: scale(1.05);
+    }
+
+    /* strong gradient from bottom so text is guaranteed legible */
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: 
+        radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,.35) 100%),
+        linear-gradient(
+          to top,
+          rgba(13,7,2,.88) 0%,
+          rgba(13,7,2,.55) 40%,
+          rgba(13,7,2,.2) 75%,
+          transparent 100%
+        );
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      padding: 80px 24px;
+      max-width: 1200px; margin: 0 auto; width: 100%;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.3);
+      color: rgba(255,255,255,.85);
+      font-size: 11px; font-weight: 600;
+      letter-spacing: .18em; text-transform: uppercase;
+      padding: 6px 16px; border-radius: 40px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(6px);
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      color: #fff;
+      margin-bottom: 22px;
+      text-shadow: 0 2px 16px rgba(0,0,0,.3);
+    }
+
+    .hero-hindi {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      color: rgba(255,255,255,.72);
+      margin-bottom: 40px;
+      letter-spacing: .01em;
+    }
+
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    /* ─── Specials ───────────────────────────────────────── */
+    #special-dishes { background: var(--cream); }
+
+    .specials-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .dish-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .dish-card {
+      background: var(--sand-warm);
+      border: 1px solid rgba(192,94,30,.18);
+      border-radius: var(--rad-lg);
+      padding: 28px 26px;
+      transition: transform .25s, box-shadow .25s, border-color .25s;
+      position: relative; overflow: hidden;
+    }
+
+    .dish-card::after {
+      content: '';
+      position: absolute; left: 0; bottom: 0; right: 0;
+      height: 3px;
+      background: var(--ember);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .3s ease;
+    }
+
+    .dish-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: rgba(192,94,30,.35); }
+    .dish-card:hover::after { transform: scaleX(1); }
+
+    .dish-icon { font-size: 2rem; margin-bottom: 14px; }
+
+    .dish-name {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 10px;
+      line-height: 1.2;
+    }
+
+    .dish-desc {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .dish-price {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--ember);
+    }
+
+    .dish-cta-card {
+      background: var(--ember);
+      border: none;
+      border-radius: var(--rad-lg);
+      padding: 28px 26px;
+      display: flex; flex-direction: column; justify-content: center;
+      text-align: center;
+      min-height: 220px;
+    }
+
+    .dish-cta-card p {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-style: italic;
+      color: rgba(255,255,255,.92);
+      line-height: 1.4;
+      margin-bottom: 22px;
+    }
+
+    /* ─── About ──────────────────────────────────────────── */
+    #about { background: var(--ink); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .about-img-wrap {
+      position: relative;
+    }
+
+    .about-img-wrap img {
+      width: 100%; height: 480px;
+      object-fit: cover;
+      border-radius: var(--rad-lg);
+    }
+
+    .about-img-badge {
+      position: absolute;
+      bottom: -18px; right: -18px;
+      background: var(--ember);
+      color: #fff;
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-style: italic;
+      padding: 16px 22px;
+      border-radius: var(--rad);
+      box-shadow: var(--shadow-lg);
+      max-width: 180px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .about-text .eyebrow { color: var(--ember-glow); }
+
+    .about-story {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 400;
+      font-style: italic;
+      color: rgba(255,252,247,.65);
+      line-height: 1.85;
+      margin-top: 22px;
+    }
+
+    .about-story em { color: var(--ember-glow); font-style: normal; }
+
+    .lang-toggle {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 28px;
+    }
+    .lang-toggle label { font-size: 13px; font-weight: 500; color: rgba(255,252,247,.5); }
+    .lang-toggle select {
+      background: rgba(255,255,255,.08);
+      color: rgba(255,252,247,.8);
+      border: 1px solid rgba(255,255,255,.2);
+      font-size: 13px; font-weight: 500;
+      padding: 6px 12px;
+      border-radius: var(--rad);
+      font-family: var(--sans);
+      cursor: pointer;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .lang-toggle select:focus { border-color: var(--ember-glow); }
+    .lang-toggle select option { background: var(--ink); color: #fff; }
+
+    /* ─── Menu ───────────────────────────────────────────── */
+    #menu { background: var(--sand); }
+
+    .menu-header {
+      display: flex; flex-wrap: wrap; gap: 20px;
+      justify-content: space-between; align-items: flex-end;
+      margin-bottom: 48px;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    /* styles for dynamically injected menu cards */
+    #menu-container .menu-item {
+      background: var(--cream);
+      border: 1px solid rgba(192,94,30,.15);
+      border-radius: var(--rad-lg);
+      overflow: hidden;
+      transition: transform .25s, box-shadow .25s;
+    }
+    #menu-container .menu-item:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+
+    #menu-signin-prompt {
+      background: var(--cream);
+      border: 2px dashed rgba(192,94,30,.3);
+      border-radius: var(--rad-lg);
+      padding: 64px 32px;
+      text-align: center;
+    }
+    #menu-signin-prompt p {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    /* ─── How to Order ───────────────────────────────────── */
+    #order { background: var(--ember); }
+
+    .order-inner { text-align: center; padding: 96px 24px; }
+
+    .order-inner .eyebrow { color: rgba(255,255,255,.6); }
+    .order-inner .display-title { color: #fff; }
+    .order-inner .rule { background: rgba(255,255,255,.4); }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      margin-top: 60px;
+    }
+
+    .step {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: var(--rad-lg);
+      padding: 36px 28px;
+      backdrop-filter: blur(8px);
+      transition: background .25s, transform .25s;
+    }
+    .step:hover { background: rgba(255,255,255,.2); transform: translateY(-4px); }
+
+    .step-number {
+      font-family: var(--serif);
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: rgba(255,255,255,.25);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .step-title {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .step-desc { font-size: 14.5px; color: rgba(255,255,255,.75); line-height: 1.65; }
+
+    /* ─── Pricing ────────────────────────────────────────── */
+    #pricing { background: var(--sand-warm); }
+
+    .pricing-header { 
+      text-align: center; 
+      margin-bottom: 56px; 
+    }
+
+    .pricing-toggle {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin: 24px 0 40px;
+    }
+
+    .toggle-btn {
+      padding: 10px 24px;
+      border: 2px solid var(--ember);
+      background: transparent;
+      color: var(--ember);
+      font-weight: 600;
+      border-radius: var(--rad);
+      cursor: pointer;
+      transition: all .3s;
+    }
+
+    .toggle-btn.active {
+      background: var(--ember);
+      color: #fff;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+      margin-top: 40px;
+    }
+
+    .pricing-card {
+      background: #fff;
+      border: 2px solid rgba(192,94,30,.2);
+      border-radius: var(--rad-lg);
+      padding: 40px 32px;
+      text-align: center;
+      transition: transform .25s, box-shadow .25s, border-color .25s;
+      position: relative;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--ember);
+    }
+
+    .pricing-card.featured {
+      border-color: var(--ember);
+      background: linear-gradient(to bottom, rgba(232,128,61,.05), rgba(192,94,30,.08));
+      transform: scale(1.02);
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--ember);
+      color: #fff;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .pricing-name {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 12px 0 8px;
+    }
+
+    .pricing-desc {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    .pricing-amount {
+      font-family: var(--serif);
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: var(--ember);
+      margin-bottom: 6px;
+    }
+
+    .pricing-period {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    .pricing-features {
+      text-align: left;
+      margin: 32px 0;
+      border-top: 1px solid rgba(192,94,30,.1);
+      border-bottom: 1px solid rgba(192,94,30,.1);
+      padding: 24px 0;
+    }
+
+    .pricing-features li {
+      list-style: none;
+      padding: 10px 0;
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pricing-features li::before {
+      content: '✓';
+      color: var(--ember);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .pricing-cta {
+      display: inline-block;
+      margin-top: 24px;
+    }
+
+    /* ─── Contact ────────────────────────────────────────── */
+    #contact { background: var(--cream); }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 56px;
+    }
+
+    .contact-card {
+      background: var(--sand-warm);
+      border: 1px solid rgba(192,94,30,.18);
+      border-radius: var(--rad-lg);
+      padding: 36px 32px;
+    }
+
+    .contact-card-label {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: .16em; text-transform: uppercase;
+      color: var(--ember); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .contact-card-value {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+
+    .contact-card-value.locked {
+      font-size: 1.2rem;
+      color: var(--muted);
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    /* ─── Admin ──────────────────────────────────────────── */
+    #admin-panel {
+      background: var(--sand-warm);
+      border-top: 3px solid var(--ember);
+      padding: 80px 0;
+    }
+
+    /* ─── Footer ─────────────────────────────────────────── */
+    #site-footer {
+      background: var(--ink);
+      color: rgba(255,252,247,.55);
+      padding: 32px 24px;
+    }
+
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; flex-wrap: wrap; gap: 32px;
+      justify-content: space-between; align-items: flex-start;
+      padding-bottom: 40px;
+      border-bottom: 1px solid rgba(255,252,247,.1);
+    }
+
+    .footer-logo {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--ember-glow);
+    }
+
+    .footer-tagline { font-size: 13px; color: rgba(255,252,247,.4); margin-top: 6px; }
+
+    .footer-nav { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+    .footer-nav a { font-size: 13px; color: rgba(255,252,247,.5); transition: color .2s; }
+    .footer-nav a:hover { color: var(--ember-glow); }
+
+    .footer-copy {
+      max-width: 1200px; margin: 28px auto 0;
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between;
+      font-size: 12px; color: rgba(255,252,247,.28);
+    }
+
+    /* ─── Modals ─────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(10,5,2,.75);
+      backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.hidden { display: none; }
+
+    .modal-box {
+      background: var(--cream);
+      border-radius: var(--rad-lg);
+      box-shadow: var(--shadow-lg);
+      max-width: 520px; width: 100%;
+      max-height: 90vh; overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 22px 28px;
+      border-bottom: 1px solid rgba(192,94,30,.15);
+      background: var(--sand-warm);
+      border-radius: var(--rad-lg) var(--rad-lg) 0 0;
+    }
+
+    .modal-header h3 {
+      font-family: var(--serif);
+      font-size: 1.5rem; font-weight: 700;
+      color: var(--ink);
+    }
+
+    .modal-close {
+      background: none; border: none; cursor: pointer;
+      font-size: 22px; color: var(--muted);
+      line-height: 1; padding: 4px;
+      transition: color .2s;
+    }
+    .modal-close:hover { color: var(--ink); }
+
+    .modal-body { padding: 28px 28px 32px; }
+
+    /* ─── Forms ──────────────────────────────────────────── */
+    .field { margin-bottom: 20px; }
+
+    .field label {
+      display: block;
+      font-size: 12px; font-weight: 600;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      background: var(--sand-warm);
+      border: 1.5px solid rgba(192,94,30,.25);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 400;
+      padding: 11px 14px;
+      border-radius: var(--rad);
+      outline: none;
+      transition: border-color .2s, background .2s;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--ember);
+      background: #fff;
+    }
+    .field input::placeholder, .field textarea::placeholder { color: rgba(122,92,64,.45); }
+
+    .field textarea { resize: vertical; }
+
+    .field-hint { font-size: 12px; color: var(--muted-lite); margin-top: 5px; }
+
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 48px; }
+    .pw-toggle {
+      position: absolute; right: 12px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      font-size: 16px; color: var(--muted-lite);
+      transition: color .2s;
+    }
+    .pw-toggle:hover { color: var(--ember); }
+
+    .strength-bars { display: flex; gap: 4px; margin-top: 8px; }
+    .strength-bar { flex: 1; height: 3px; background: rgba(122,92,64,.2); border-radius: 2px; transition: background .3s; }
+
+    .checkbox-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 14px;
+    }
+    .checkbox-row input[type="checkbox"] { width: 17px; height: 17px; flex-shrink: 0; accent-color: var(--ember); cursor: pointer; }
+    .checkbox-row label { font-size: 14px; font-weight: 400; color: var(--ink-soft); letter-spacing: 0; text-transform: none; margin: 0; cursor: pointer; }
+
+    .form-divider { border: none; border-top: 1px solid rgba(192,94,30,.15); margin: 22px 0; }
+
+    .security-badge {
+      display: flex; align-items: center; gap: 10px;
+      background: #f0faf4;
+      border: 1px solid #b2dfcc;
+      border-radius: var(--rad);
+      padding: 10px 14px;
+      margin-bottom: 22px;
+      font-size: 13px;
+      color: #2a6644;
+      font-weight: 500;
+    }
+
+    /* ─── Scroll Reveal ──────────────────────────────────── */
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity .65s ease, transform .65s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ─── Loader ─────────────────────────────────────────── */
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(192,94,30,.2);
+      border-top-color: var(--ember);
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+      margin: 48px auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── Responsive ─────────────────────────────────────── */
+    @media (max-width: 768px) {
+      nav.desktop-nav { display: none; }
+      .hamburger { display: flex; }
+      #sign-in-btn.desktop-only { display: none; }
+
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .about-img-wrap img { height: 320px; }
+      .about-img-badge { bottom: -12px; right: 12px; }
+
+      .steps-grid { grid-template-columns: 1fr; gap: 16px; }
+
+      .contact-grid { grid-template-columns: 1fr; }
+
+      .menu-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<header id="site-header">
+  <div class="header-inner">
+    <a href="#home" class="logo">SwaadSe<span>.in</span></a>
+
+    <nav class="desktop-nav">
+      <a href="#home">Home</a>
+      <a href="#about">Our Story</a>
+      <a href="#menu">Menu</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <div class="header-actions">
+      <div id="user-actions">
+        <button id="order-btn" class="btn btn-solid">Order Now</button>
+        <button id="sign-out-btn">Sign Out</button>
+      </div>
+      <a id="sign-in-btn" href="#" class="btn btn-solid desktop-only">Sign In</a>
+      <button class="hamburger" id="hamburger-btn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu">
+    <a href="#home">Home</a>
+    <a href="#about">Our Story</a>
+    <a href="#menu">Menu</a>
+    <a href="#contact">Contact</a>
+    <a href="#" id="mobile-sign-in" style="color: var(--ember); font-weight: 600;">Sign In →</a>
+  </div>
+</header>
+
+<main>
+
+<!-- ══════════════ HERO ══════════════ -->
+<section id="home" style="position: relative; min-height: 90vh; display: flex; align-items: flex-end;">
+  <img
+    class="hero-bg"
+    src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1920&q=85"
+    onerror="this.src='https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=1920&q=85'"
+    alt="Authentic home-cooked Indian meal thali">
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <div style="max-width: 680px;">
+      <div class="hero-badge">Authentic Home Kitchen · Gwalior, M.P.</div>
+      <h1 class="hero-title">Made by Maa,<br>Delivered with Love.</h1>
+      <p class="hero-hindi">"घर का खाना, माँ के हाथों का प्यार – हर निवाले में अपनापन।"</p>
+      <div class="hero-actions">
+        <a href="#menu" class="btn btn-solid">See Today's Menu</a>
+        <a href="#about" class="btn btn-outline">Our Story</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ SPECIAL DISHES ══════════════ -->
+<section id="special-dishes" class="section-pad">
+  <div class="container">
+    <div class="specials-header reveal">
+      <span class="eyebrow">Weekend Special</span>
+      <h2 class="display-title" style="margin-bottom: 0;">Special Thali on Weekends</h2>
+      <div class="rule"></div>
+      <p class="subtitle" style="margin: 20px auto 0;">
+        Complete meal combinations available on weekends — traditional dishes made fresh with seasonal ingredients and family recipes.
+      </p>
+    </div>
+
+    <div class="dish-grid reveal">
+
+      <div class="dish-card">
+        <div class="dish-icon">👑</div>
+        <h4 class="dish-name">Butter Paneer Thali</h4>
+        <p class="dish-desc">Creamy tomato-based sauce with tender paneer, served with roti, rice, raita and salad.</p>
+        <div class="dish-price">₹260</div>
+      </div>
+
+      <div class="dish-card">
+        <div class="dish-icon">🌶️</div>
+        <h4 class="dish-name">Chole Bhature Thali</h4>
+        <p class="dish-desc">Fluffy golden fried bread with spiced chickpea curry, onions, pickle and sweet lassi — complete meal.</p>
+        <div class="dish-price">₹250</div>
+      </div>
+
+      <div class="dish-card">
+        <div class="dish-icon">🍛</div>
+        <h4 class="dish-name">Paneer Tikka Thali</h4>
+        <p class="dish-desc">Grilled paneer cubes in masala, served with naan, basmati rice, raita and seasonal salad.</p>
+        <div class="dish-price">₹220</div>
+      </div>
+
+      <div class="dish-card">
+        <div class="dish-icon">🍲</div>
+        <h4 class="dish-name">Biryani Thali</h4>
+        <p class="dish-desc">Fragrant basmati layered with marinated vegetables and saffron, served with raita, pickle and salad.</p>
+        <div class="dish-price">₹210</div>
+      </div>
+
+      <div class="dish-card">
+        <div class="dish-icon">🥘</div>
+        <h4 class="dish-name">Dal Makhani Thali</h4>
+        <p class="dish-desc">Creamy black lentils simmered with butter and spices, served with puri, rice and pickle.</p>
+        <div class="dish-price">₹200</div>
+      </div>
+
+      <div class="dish-card">
+        <div class="dish-icon">🥬</div>
+        <h4 class="dish-name">Palak Paneer Thali</h4>
+        <p class="dish-desc">Vibrant organic spinach puree with soft paneer cubes, served with roti, rice and buttermilk.</p>
+        <div class="dish-price">₹180</div>
+      </div>
+
+      <div class="dish-card">
+        <div class="dish-icon">🥔</div>
+        <h4 class="dish-name">Aloo Gobi Thali</h4>
+        <p class="dish-desc">Potato and cauliflower stir-fried with turmeric and cumin, served with roti and dal.</p>
+        <div class="dish-price">₹150</div>
+      </div>
+
+      <!-- CTA card -->
+      <div class="dish-cta-card">
+        <p>Want something<br><em>specific?</em></p>
+        <a href="#contact" class="btn btn-outline" style="align-self: center;">Ask Us</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ OUR STORY ══════════════ -->
+<section id="about" class="section-pad">
+  <div class="container">
+    <div class="about-grid">
+
+      <!-- image side -->
+      <div class="about-img-wrap reveal">
+        <img
+          src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=800&q=80"
+          onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80'"
+          alt="Home-cooked Indian food">
+        <div class="about-img-badge">Made fresh,<br>every single day.</div>
+      </div>
+
+      <!-- text side -->
+      <div class="about-text reveal">
+        <span class="eyebrow">Our Story</span>
+        <h2 class="display-title light">A Little Kitchen<br>with a Big Heart</h2>
+
+        <div id="about-en">
+          <p class="about-story">
+            Growing up, I watched my mother wake before sunrise — kneading dough, stirring pots, filling the kitchen with warmth and the fragrance of spices. Every meal was an unhurried act of love.
+          </p>
+          <p class="about-story" style="margin-top: 16px;">
+            When I moved away, I missed not just the taste, but the feeling. <em>SwaadSe.in</em> was born from that longing — every dish here carries the same patience, the same secret masalas, and the same love that once filled my childhood kitchen.
+          </p>
+        </div>
+
+        <div id="about-hi" style="display: none;">
+          <p class="about-story">
+            मैंने बचपन में माँ को रोज़ सूरज उगने से पहले उठते देखा — आटा गूंधते, सब्ज़ी में तड़का लगाते, रसोई को प्यार की महक से भरते।
+          </p>
+          <p class="about-story" style="margin-top: 16px;">
+            घर से दूर जाने पर, सिर्फ़ स्वाद नहीं, वो अपनापन भी याद आया। <em>SwaadSe.in</em> उसी याद से जन्मी — हर निवाले में वही प्यार, वही मसाले, वही सुकून।
+          </p>
+        </div>
+
+        <div class="lang-toggle">
+          <label for="lang-select">Language:</label>
+          <select id="lang-select">
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ DAILY MENU ══════════════ -->
+<section id="menu" class="section-pad">
+  <div class="container">
+    <div class="menu-header reveal">
+      <div>
+        <span class="eyebrow">Fresh Today</span>
+        <h2 class="display-title">Today's Menu</h2>
+        <div class="rule left"></div>
+        <p class="subtitle" style="margin-top: 14px;">
+          Our menu changes daily with the freshest ingredients. Sign in to browse and place your order.
+        </p>
+      </div>
+      <button id="show-weekly-planner-btn" class="btn btn-ghost" style="flex-shrink: 0;">
+        ✦ Suggest Weekly Plan
+      </button>
+    </div>
+
+    <!-- Sign-in prompt (shown when logged out) -->
+    <div id="menu-signin-prompt" class="hidden">
+      <p>Sign in to see what's cooking today</p>
+      <button id="menu-signin" class="btn btn-solid">Sign In to View Menu</button>
+    </div>
+
+    <!-- Menu items injected by script.js -->
+    <div id="menu-container" class="menu-grid reveal"></div>
+  </div>
+</section>
+
+<!-- ══════════════ HOW TO ORDER ══════════════ -->
+<section id="order">
+  <div class="order-inner container">
+    <span class="eyebrow">Simple Process</span>
+    <h2 class="display-title">Ordering is Easy</h2>
+    <div class="rule"></div>
+
+    <div class="steps-grid reveal">
+      <div class="step">
+        <div class="step-number">01</div>
+        <h3 class="step-title">Browse the Menu</h3>
+        <p class="step-desc">See what's cooking fresh today. Our menu updates daily with the finest seasonal ingredients.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">02</div>
+        <h3 class="step-title">Call or WhatsApp</h3>
+        <p class="step-desc">Place your order by phone or WhatsApp. We'll confirm items, quantity, and your preferred time.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">03</div>
+        <h3 class="step-title">Pick Up or Delivery</h3>
+        <p class="step-desc">Collect from our kitchen or get it delivered to your doorstep — fresh, warm, and on time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ PRICING PLANS ══════════════ -->
+<section id="pricing" class="section-pad">
+  <div class="container">
+    <div class="pricing-header reveal">
+      <span class="eyebrow">Flexible Plans</span>
+      <h2 class="display-title" style="margin-bottom: 0;">Choose Your Plan</h2>
+      <div class="rule"></div>
+      <p class="subtitle" style="margin: 20px auto 0;">
+        Subscribe to your favorite plan and enjoy fresh home-cooked meals delivered regularly. Cancel anytime.
+      </p>
+
+      <div class="pricing-toggle">
+        <button class="toggle-btn active" onclick="togglePricing('weekly')">📅 Weekly Plans</button>
+        <button class="toggle-btn" onclick="togglePricing('monthly')">📆 Monthly Plans</button>
+      </div>
+    </div>
+
+    <!-- Weekly Pricing -->
+    <div id="weekly-pricing" class="pricing-grid reveal">
+      <div class="pricing-card">
+        <h3 class="pricing-name">Single Meal</h3>
+        <p class="pricing-desc">One hearty meal, one day</p>
+        <div class="pricing-amount">₹180</div>
+        <div class="pricing-period">per meal</div>
+        <ul class="pricing-features">
+          <li>Complete thali set</li>
+          <li>Choice of 2 main dishes</li>
+          <li>Roti, rice & salad</li>
+          <li>Fresh daily preparation</li>
+        </ul>
+        <button class="btn btn-solid pricing-cta">Choose Plan</button>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Popular</div>
+        <h3 class="pricing-name">Weekly 5-Day</h3>
+        <p class="pricing-desc">Monday to Friday meals</p>
+        <div class="pricing-amount">₹799</div>
+        <div class="pricing-period">per week</div>
+        <ul class="pricing-features">
+          <li>5 complete thali sets</li>
+          <li>Variety of dishes daily</li>
+          <li>Free delivery within area</li>
+          <li>Customization available</li>
+          <li>Fresh & hot guarantee</li>
+        </ul>
+        <button class="btn btn-solid pricing-cta">Choose Plan</button>
+      </div>
+
+      <div class="pricing-card">
+        <h3 class="pricing-name">Weekend Combo</h3>
+        <p class="pricing-desc">Saturday & Sunday meals</p>
+        <div class="pricing-amount">₹399</div>
+        <div class="pricing-period">per week</div>
+        <ul class="pricing-features">
+          <li>2 special thali sets</li>
+          <li>Premium dishes selection</li>
+          <li>Pickup or delivery</li>
+          <li>Special weekend recipes</li>
+        </ul>
+        <button class="btn btn-solid pricing-cta">Choose Plan</button>
+      </div>
+    </div>
+
+    <!-- Monthly Pricing -->
+    <div id="monthly-pricing" class="pricing-grid reveal" style="display: none;">
+      <div class="pricing-card">
+        <h3 class="pricing-name">Light Plan</h3>
+        <p class="pricing-desc">10 meals per month</p>
+        <div class="pricing-amount">₹1,649</div>
+        <div class="pricing-period">per month</div>
+        <ul class="pricing-features">
+          <li>10 complete thali sets</li>
+          <li>Choose your days</li>
+          <li>Free delivery 2x per week</li>
+          <li>Menu flexibility</li>
+          <li>Customer support</li>
+        </ul>
+        <button class="btn btn-solid pricing-cta">Choose Plan</button>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Best Value</div>
+        <h3 class="pricing-name">Standard Plan</h3>
+        <p class="pricing-desc">20 meals per month</p>
+        <div class="pricing-amount">₹3,199</div>
+        <div class="pricing-period">per month</div>
+        <ul class="pricing-features">
+          <li>20 complete thali sets</li>
+          <li>Flexible scheduling</li>
+          <li>Free daily delivery</li>
+          <li>Full menu access</li>
+          <li>Priority support</li>
+          <li>₹160 per meal</li>
+        </ul>
+        <button class="btn btn-solid pricing-cta">Choose Plan</button>
+      </div>
+
+      <div class="pricing-card">
+        <h3 class="pricing-name">Premium Plan</h3>
+        <p class="pricing-desc">30 meals per month</p>
+        <div class="pricing-amount">₹4,399</div>
+        <div class="pricing-period">per month</div>
+        <ul class="pricing-features">
+          <li>30 complete thali sets</li>
+          <li>Daily delivery included</li>
+          <li>Special requests honored</li>
+          <li>Dietary customization</li>
+          <li>VIP customer support</li>
+          <li>₹146 per meal</li>
+        </ul>
+        <button class="btn btn-solid pricing-cta">Choose Plan</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function togglePricing(type) {
+      const weeklyPricing = document.getElementById('weekly-pricing');
+      const monthlyPricing = document.getElementById('monthly-pricing');
+      const buttons = document.querySelectorAll('.toggle-btn');
+
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      if (type === 'weekly') {
+        weeklyPricing.style.display = 'grid';
+        monthlyPricing.style.display = 'none';
+      } else {
+        weeklyPricing.style.display = 'none';
+        monthlyPricing.style.display = 'grid';
+      }
+    }
+  </script>
+</section>
+
+<!-- ══════════════ CONTACT ══════════════ -->
+<section id="contact" class="section-pad">
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="eyebrow">Get in Touch</span>
+      <h2 class="display-title">Reach Us</h2>
+      <div class="rule"></div>
+      <p class="subtitle" style="margin: 18px auto 0;">For orders, questions, or feedback — we're always happy to hear from you.</p>
+    </div>
+
+    <!-- Contact Information -->
+    <!--<div class="contact-grid reveal">
+      <div class="contact-card">
+        <div class="contact-card-label">
+          <span>📞</span> Phone &amp; WhatsApp
+        </div>
+        <div id="phone-display">
+          <div class="contact-card-value locked">🔒 Available after login</div>
+          <button id="login-prompt-btn" class="btn btn-ghost" style="margin-top: 18px; font-size: 12px; padding: 10px 20px;">
+            Sign In to View
+          </button>
+        </div>
+        <div id="phone-actual" class="hidden">
+          <div class="contact-card-value">+91 </div>
+        </div>
+      </div> -->
+
+      <div class="contact-grid reveal">
+      <div class="contact-card">
+        <div class="contact-card-label">
+          <span>📩</span> contact us &amp; email id    
+        </div>
+        <div id="email-display">
+        </div>
+        <div id="email-actual" class="hidden">
+          <div class="contact-card-value">arjunthakurr420@gmail.com</div>
+        </div>
+      </div>
+
+      <div class="contact-card">
+        <div class="contact-card-label">
+          <span>📍</span> Kitchen Address
+        </div>
+        <div class="contact-card-value">
+          DD Nagar, Gwalior
+        </div>
+        <p style="font-size: 15px; color: var(--muted); margin-top: 6px; font-weight: 400;">Madhya Pradesh — 474001</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ══════════════ ADMIN PANEL ══════════════ -->
+<section id="admin-panel" style="display: none;">
+  <div class="container" style="max-width: 720px;">
+    <span class="eyebrow">Admin</span>
+    <h2 class="display-title" style="margin-bottom: 32px;">Add Menu Item</h2>
+
+    <form id="add-menu-item-form" style="background: var(--cream); border: 1px solid rgba(192,94,30,.18); border-radius: var(--rad-lg); padding: 36px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="field" style="grid-column: 1 / -1;">
+          <label for="itemName">Item Name</label>
+          <input type="text" id="itemName" name="itemName" required placeholder="e.g. Rajma Chawal">
+        </div>
+
+        <div class="field" style="grid-column: 1 / -1; position: relative;">
+          <label for="itemDescription">Description</label>
+          <textarea id="itemDescription" name="itemDescription" rows="3" required placeholder="Describe the dish…"></textarea>
+          <button type="button" id="generate-description-btn" class="btn btn-dark"
+            style="position: absolute; bottom: 12px; right: 12px; font-size: 11px; padding: 7px 14px;">
+            ✦ Auto-generate
+          </button>
+        </div>
+
+        <div class="field">
+          <label for="itemPrice">Price (₹)</label>
+          <input type="number" id="itemPrice" name="itemPrice" required placeholder="250">
+        </div>
+
+        <div class="field">
+          <label for="itemImage">Image Keyword</label>
+          <input type="text" id="itemImage" name="itemImage" placeholder="e.g. Rajma+Chawal" required>
+        </div>
+      </div>
+
+      <button type="submit" id="submit-menu-item" class="btn btn-solid" style="width: 100%; justify-content: center; margin-top: 8px; padding: 14px;">
+        Add to Menu
+      </button>
+      <p id="admin-message" style="text-align: center; margin-top: 14px; font-size: 14px; color: #2a6644;"></p>
+    </form>
+  </div>
+</section>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer id="site-footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">SwaadSe.in</div>
+      <p class="footer-tagline">Made by Maa, Delivered with Love.</p>
+    </div>
+    <nav class="footer-nav">
+      <a href="#home">Home</a>
+      <a href="#about">Our Story</a>
+      <a href="#menu">Menu</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+  <div class="footer-copy">
+    <span>© 2025 SwaadSe.in. All rights reserved.</span>
+    <span>SwaadSe.in™ is a registered trademark. Unauthorised use prohibited.</span>
+  </div>
+</footer>
+
+<!-- ══════════════ MODALS ══════════════ -->
+
+<!-- Weekly Planner Modal -->
+<div id="planner-modal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>✦ Weekly Meal Plan</h3>
+      <button id="close-modal-btn" class="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div id="modal-content" class="modal-body">
+      <div id="modal-loader"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Auth Modal -->
+<div id="auth-modal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header" style="background: var(--ink); border-radius: var(--rad-lg) var(--rad-lg) 0 0;">
+      <h3 id="auth-title" style="color: var(--cream);">Sign In</h3>
+      <button id="close-auth-modal" class="modal-close" style="color: rgba(255,252,247,.5);" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="security-badge">
+        🔒 Secure connection · All credentials are encrypted
+      </div>
+
+      <form id="auth-form">
+        <div class="field">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" required placeholder="you@example.com">
+          <p id="email-feedback" class="field-hint"></p>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="password" required placeholder="Enter your password">
+            <button type="button" id="toggle-password" class="pw-toggle" aria-label="Toggle visibility">👁</button>
+          </div>
+          <p id="password-feedback" class="field-hint"></p>
+          <div id="password-strength-container" class="hidden">
+            <div class="strength-bars">
+              <div class="strength-bar" id="strength-bar-1"></div>
+              <div class="strength-bar" id="strength-bar-2"></div>
+              <div class="strength-bar" id="strength-bar-3"></div>
+              <div class="strength-bar" id="strength-bar-4"></div>
+            </div>
+            <p id="strength-text" class="field-hint" style="margin-top: 6px;"></p>
+          </div>
+        </div>
+
+        <div class="field hidden" id="confirm-password-field">
+          <label for="confirm-password">Confirm Password</label>
+          <input type="password" id="confirm-password" placeholder="Re-enter your password">
+          <p id="confirm-feedback" class="field-hint"></p>
+        </div>
+
+        <div id="remember-me-field" class="hidden">
+          <div class="checkbox-row">
+            <input type="checkbox" id="remember-me">
+            <label for="remember-me">Remember me for 30 days</label>
+          </div>
+        </div>
+
+        <div id="two-fa-field" class="hidden">
+          <div class="checkbox-row">
+            <input type="checkbox" id="enable-2fa">
+            <label for="enable-2fa">Enable two-factor authentication (SMS)</label>
+          </div>
+          <p class="field-hint" style="padding-left: 27px;">📱 We'll send a code to verify your phone</p>
+        </div>
+
+        <button type="submit" id="auth-submit" class="btn btn-solid" style="width: 100%; justify-content: center; padding: 14px; margin-top: 8px;">
+          Sign In
+        </button>
+        <p id="auth-message" style="text-align: center; margin-top: 12px; font-size: 13px; color: #b81c1c;"></p>
+      </form>
+
+      <hr class="form-divider">
+
+      <p style="text-align: center; font-size: 14px; color: var(--muted);">
+        <button id="toggle-auth" style="background: none; border: none; cursor: pointer; color: var(--ember); font-size: 14px; font-weight: 600; font-family: var(--sans); text-decoration: underline;">
+          Don't have an account? Sign Up
+        </button>
+      </p>
+
+      <p style="text-align: center; font-size: 12px; color: var(--muted-lite); margin-top: 14px;">
+        By continuing, you agree to our
+        <button style="color: var(--ember); background: none; border: none; cursor: pointer; font-size: 12px; text-decoration: underline; font-family: var(--sans);">Terms of Service</button>
+        and
+        <button style="color: var(--ember); background: none; border: none; cursor: pointer; font-size: 12px; text-decoration: underline; font-family: var(--sans);">Privacy Policy</button>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Order Modal -->
+<div id="order-modal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Place Your Order</h3>
+      <button id="close-order-modal" class="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="order-form">
+        <div class="field">
+          <label for="order-name">Full Name</label>
+          <input type="text" id="order-name" required placeholder="Your name">
+        </div>
+        <div class="field">
+          <label for="order-phone">Phone Number</label>
+          <input type="tel" id="order-phone" required placeholder="+91 XXXXX XXXXX">
+        </div>
+        <div class="field">
+          <label for="order-email">Email Address</label>
+          <input type="email" id="order-email" required placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label>Select Items</label>
+          <div id="order-items" style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+            <!-- Populated by script.js -->
+          </div>
+        </div>
+        <div class="field">
+          <label for="order-message">Special Instructions</label>
+          <textarea id="order-message" rows="3" placeholder="Allergies, delivery notes, preferences…"></textarea>
+        </div>
+        <button type="submit" id="submit-order" class="btn btn-solid" style="width: 100%; justify-content: center; padding: 14px;">
+          Confirm Order
+        </button>
+        <p id="order-status" style="text-align: center; margin-top: 14px; font-size: 13px; color: #2a6644;"></p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SCRIPTS ══════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+<script>
+  /* ── Scroll reveal ── */
+  const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); revealObserver.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  /* ── Mobile nav ── */
+  const hamburger = document.getElementById('hamburger-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  hamburger?.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  mobileMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+  /* ── Language toggle ── */
+  document.getElementById('lang-select')?.addEventListener('change', function () {
+    document.getElementById('about-en').style.display = this.value === 'hi' ? 'none' : '';
+    document.getElementById('about-hi').style.display = this.value === 'hi' ? '' : 'none';
+  });
+
+  /* ── Modal helpers ── */
+  const openModal  = id => document.getElementById(id)?.classList.remove('hidden');
+  const closeModal = id => document.getElementById(id)?.classList.add('hidden');
+
+  document.getElementById('close-modal-btn')?.addEventListener('click',  () => closeModal('planner-modal'));
+  document.getElementById('close-auth-modal')?.addEventListener('click', () => closeModal('auth-modal'));
+  document.getElementById('close-order-modal')?.addEventListener('click',() => closeModal('order-modal'));
+
+  ['planner-modal','auth-modal','order-modal'].forEach(id => {
+    document.getElementById(id)?.addEventListener('click', e => { if (e.target.id === id) closeModal(id); });
+  });
+
+  document.getElementById('sign-in-btn')?.addEventListener('click', e => { e.preventDefault(); openModal('auth-modal'); });
+  document.getElementById('mobile-sign-in')?.addEventListener('click', e => { e.preventDefault(); mobileMenu.classList.remove('open'); openModal('auth-modal'); });
+  document.getElementById('show-weekly-planner-btn')?.addEventListener('click', () => openModal('planner-modal'));
+  document.getElementById('login-prompt-btn')?.addEventListener('click', () => openModal('auth-modal'));
+  document.getElementById('menu-signin')?.addEventListener('click', () => openModal('auth-modal'));
+
+  /* ── Password toggle ── */
+  document.getElementById('toggle-password')?.addEventListener('click', () => {
+    const pw = document.getElementById('password');
+    pw.type = pw.type === 'password' ? 'text' : 'password';
+  });
+</script>
+
+<script type="module" src="script.js"></script>
+</body>
+</html>
