@@ -36,6 +36,10 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+    }
 
     body {
       font-family: var(--sans);
@@ -1169,6 +1173,239 @@
 
       .step-number { font-size: 2rem; }
     }
+
+    /* ─── GLOBAL UTILITIES ─── */
+    .hidden { display: none !important; }
+    .input-status { display: none; margin-left: 8px; }
+    .input-status.show { display: inline-block; }
+
+    /* ─── ENHANCED AUTH MODAL ─── */
+    .auth-modal-enhanced {
+      max-width: 440px !important;
+      width: 100%;
+      background: #ffffff !important;
+      border-radius: 24px !important;
+      border: 1px solid rgba(192, 94, 30, 0.12) !important;
+      box-shadow: 0 20px 50px rgba(26, 14, 5, 0.15) !important;
+      overflow: hidden;
+      font-family: var(--sans);
+    }
+    
+    .auth-modal-header {
+      background: var(--ink) !important;
+      padding: 24px 28px !important;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--ember) !important;
+    }
+    
+    .auth-modal-header h3 {
+      color: var(--cream) !important;
+      font-family: var(--serif);
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0;
+    }
+    
+    .auth-modal-header p {
+      font-size: 13px;
+      color: rgba(255,252,247,.7);
+      margin: 4px 0 0 0;
+    }
+    
+    .modal-close-enhanced {
+      background: rgba(255,252,247,0.08) !important;
+      border: 1px solid rgba(255,252,247,0.18) !important;
+      cursor: pointer;
+      font-size: 15px;
+      color: rgba(255,252,247,0.7) !important;
+      width: 32px;
+      height: 32px;
+      border-radius: 50% !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s ease !important;
+    }
+    
+    .modal-close-enhanced:hover {
+      background: rgba(255,252,247,0.2) !important;
+      color: #ffffff !important;
+      transform: rotate(90deg);
+    }
+    
+    .security-badge-enhanced {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(192, 94, 30, 0.05) !important;
+      border: 1.5px solid rgba(192, 94, 30, 0.12) !important;
+      padding: 10px 14px !important;
+      border-radius: 10px !important;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    
+    .form-group-enhanced {
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .form-group-enhanced label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-soft);
+    }
+    
+    .form-group-enhanced input {
+      width: 100%;
+      border: 1.5px solid rgba(192, 94, 30, 0.18) !important;
+      border-radius: 10px !important;
+      padding: 10px 14px !important;
+      font-size: 14px !important;
+      outline: none;
+      background: #ffffff !important;
+      color: var(--ink) !important;
+      transition: all 0.25s ease !important;
+    }
+    
+    .form-group-enhanced input:focus {
+      border-color: var(--ember) !important;
+      box-shadow: 0 0 0 4px rgba(192, 94, 30, 0.1) !important;
+    }
+    
+    .pw-wrap {
+      position: relative;
+      width: 100%;
+    }
+    
+    .pw-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted-lite);
+      font-size: 16px;
+      transition: color 0.2s;
+    }
+    .pw-toggle:hover {
+      color: var(--ember);
+    }
+    
+    .strength-bars {
+      display: flex;
+      gap: 4px;
+      margin-top: 8px;
+    }
+    
+    .strength-bar {
+      flex: 1;
+      height: 3px;
+      background: rgba(122,92,64,.2);
+      border-radius: 2px;
+      transition: background 0.3s;
+    }
+    .strength-bar.weak { background: #dc2626 !important; }
+    .strength-bar.fair { background: #f97316 !important; }
+    .strength-bar.good { background: #eab308 !important; }
+    .strength-bar.strong { background: #22c55e !important; }
+    
+    .demo-badges-container {
+      margin-top: 20px;
+      text-align: center;
+      border-top: 1px dashed rgba(192,94,30,.2);
+      padding-top: 16px;
+    }
+    
+    .demo-badge-btn {
+      font-size: 11.5px;
+      padding: 6px 14px;
+      border: 1.5px solid rgba(192, 94, 30, 0.25) !important;
+      background: rgba(192, 94, 30, 0.03) !important;
+      border-radius: 20px !important;
+      cursor: pointer;
+      color: var(--muted) !important;
+      font-weight: 600;
+      font-family: var(--sans);
+      transition: all 0.2s ease;
+    }
+    
+    .demo-badge-btn:hover {
+      background: rgba(192, 94, 30, 0.08) !important;
+      border-color: var(--ember) !important;
+      color: var(--ember) !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(192, 94, 30, 0.06);
+    }
+    
+    .social-btn-google {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      border: 1.5px solid rgba(192,94,30,.22) !important;
+      border-radius: 10px !important;
+      padding: 11px !important;
+      background: #ffffff !important;
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-soft) !important;
+      cursor: pointer;
+      transition: all 0.25s ease !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    }
+    
+    .social-btn-google:hover {
+      background: #fafafa !important;
+      border-color: var(--ember) !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(192,94,30,0.08) !important;
+    }
+    
+    .google-account-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 14px;
+      border: 1px solid rgba(192,94,30,.12);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #ffffff;
+      margin-bottom: 8px;
+    }
+    
+    .google-account-item:hover {
+      background-color: #fdf6ec !important;
+      border-color: var(--ember) !important;
+      transform: translateY(-1.5px);
+      box-shadow: 0 4px 10px rgba(192,94,30,0.08);
+    }
+    
+    .login-prompt-btn {
+      background: none !important;
+      border: 1.5px solid rgba(192, 94, 30, 0.3) !important;
+      color: var(--ember) !important;
+      border-radius: 99px !important;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12.5px;
+      padding: 8px 20px !important;
+      transition: all 0.2s ease;
+    }
+    .login-prompt-btn:hover {
+      background: rgba(192, 94, 30, 0.06) !important;
+      border-color: var(--ember) !important;
+    }
   </style>
 </head>
 <body>
@@ -1191,6 +1428,7 @@
           <span style="font-size: 20px;">🛒</span>
           <span class="cart-badge" id="cart-badge" style="display: none;">0</span>
         </div>
+        <span id="user-email" class="hidden" style="color: var(--muted); font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; display: inline-block; vertical-align: middle; margin-right: 8px;"></span>
         <button id="order-btn" class="btn btn-solid">Order Now</button>
         <button id="sign-out-btn">Sign Out</button>
       </div>
@@ -1206,14 +1444,18 @@
     <a href="#about">Our Story</a>
     <a href="#menu">Menu</a>
     <a href="#contact">Contact</a>
-    <a href="#" id="mobile-sign-in" style="color: var(--ember); font-weight: 600;">Sign In →</a>
+    <a href="#" id="mobile-sign-in" style="color: var(--ember); font-weight: 600; display: block;">Sign In →</a>
+    <div id="mobile-user-actions" class="hidden" style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px; border-top: 1px solid rgba(192,94,30,.1); padding-top: 12px;">
+      <span id="mobile-user-email" style="font-size: 14px; color: var(--muted); font-weight: 600; text-align: center; display: block; padding: 4px 0; word-break: break-all;"></span>
+      <a href="#" id="mobile-sign-out" style="color: var(--muted); font-weight: 600; border: 1.5px solid var(--muted); padding: 8px 12px; border-radius: 6px; display: block; text-align: center;">Sign Out ⎋</a>
+    </div>
   </div>
 </header>
 
 <main>
 
 <!-- ══════════════ HERO ══════════════ -->
-<section id="home" style="position: relative; min-height: 90vh; display: flex; align-items: flex-end;">
+<section id="home" style="position: relative; min-height: 90vh; display: flex; align-items: flex-end; overflow: hidden;">
   <img
     class="hero-bg"
     src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1920&q=85"
@@ -1581,9 +1823,13 @@
           <span>📩</span> contact us &amp; email id    
         </div>
         <div id="email-display">
+          <div class="contact-card-value locked" style="font-size: 16px;">🔒 Available after login</div>
+          <button class="btn btn-ghost login-prompt-btn" style="margin-top: 18px; font-size: 12px; padding: 10px 20px;">
+            Sign In to View
+          </button>
         </div>
         <div id="email-actual" class="hidden">
-          <div class="contact-card-value">arjunthakurr420@gmail.com</div>
+          <div class="contact-card-value" style="word-break: break-all;">arjunthakurr420@gmail.com</div>
         </div>
       </div>
 
@@ -1678,84 +1924,234 @@
   </div>
 </div>
 
-<!-- Auth Modal -->
+<!-- Auth Modal - Completely Rebuilt -->
 <div id="auth-modal" class="modal-overlay hidden">
-  <div class="modal-box">
-    <div class="modal-header" style="background: var(--ink); border-radius: var(--rad-lg) var(--rad-lg) 0 0;">
-      <h3 id="auth-title" style="color: var(--cream);">Sign In</h3>
-      <button id="close-auth-modal" class="modal-close" style="color: rgba(255,252,247,.5);" aria-label="Close">✕</button>
+  <div class="modal-box auth-modal-enhanced">
+    <!-- Header -->
+    <div class="auth-modal-header" style="background: var(--ink); border-radius: var(--rad-lg) var(--rad-lg) 0 0; padding: 24px 28px; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h3 id="auth-title-main" style="color: var(--cream); font-family: var(--serif); font-size: 24px; font-weight: 700; margin: 0;">Welcome Back</h3>
+        <p id="auth-subtitle" style="font-size: 13px; color: rgba(255,252,247,.6); margin: 4px 0 0 0;">Sign in to your SwaadSe account</p>
+      </div>
+      <button id="close-auth-modal" class="modal-close-enhanced" style="background: rgba(255,252,247,0.1); border: 1px solid rgba(255,252,247,0.2); cursor: pointer; font-size: 16px; color: rgba(255,252,247,0.6); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" aria-label="Close">✕</button>
     </div>
-    <div class="modal-body">
-      <div class="security-badge">
-        🔒 Secure connection · All credentials are encrypted
+    <div class="modal-body" style="padding: 28px;">
+      <!-- Security Badge -->
+      <div class="security-badge-enhanced" style="display: flex; align-items: center; gap: 8px; background: rgba(192,94,30,0.06); border: 1px solid rgba(192,94,30,0.15); padding: 10px 14px; border-radius: 8px; margin-bottom: 20px; font-size: 12.5px; color: var(--muted); font-weight: 500;">
+        <span class="badge-icon">🔒</span>
+        <span>Secure connection • All credentials encrypted</span>
       </div>
 
-      <form id="auth-form">
-        <div class="field">
-          <label for="email">Email Address</label>
-          <input type="email" id="email" required placeholder="you@example.com">
-          <p id="email-feedback" class="field-hint"></p>
+      <!-- Main Auth Form -->
+      <form id="auth-form" class="auth-form-enhanced">
+        <!-- Email Field -->
+        <div class="form-group-enhanced" style="margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label for="email" style="font-size: 13px; font-weight: 600; color: var(--ink-soft);">Email Address</label>
+            <span id="email-check" class="input-status" style="font-size: 13px; font-weight: 700;"></span>
+          </div>
+          <input 
+            type="email" 
+            id="email" 
+            required 
+            placeholder="you@example.com"
+            style="width: 100%; border: 1.5px solid rgba(192,94,30,.2); border-radius: 8px; padding: 10px 12px; font-size: 14px; outline: none; background: #fff;"
+            autocomplete="email"
+          >
+          <p id="email-feedback" class="form-hint" style="font-size: 11px; margin-top: 2px;"></p>
         </div>
 
-        <div class="field">
-          <label for="password">Password</label>
-          <div class="pw-wrap">
-            <input type="password" id="password" required placeholder="Enter your password">
-            <button type="button" id="toggle-password" class="pw-toggle" aria-label="Toggle visibility">👁</button>
+        <!-- Password Field -->
+        <div class="form-group-enhanced" style="margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label for="password" style="font-size: 13px; font-weight: 600; color: var(--ink-soft);">Password</label>
+            <a href="#" id="forgot-password-link" style="font-size: 12px; color: var(--ember); font-weight: 600; font-family: var(--sans);">Forgot?</a>
           </div>
-          <p id="password-feedback" class="field-hint"></p>
-          <div id="password-strength-container" class="hidden">
-            <div class="strength-bars">
-              <div class="strength-bar" id="strength-bar-1"></div>
-              <div class="strength-bar" id="strength-bar-2"></div>
-              <div class="strength-bar" id="strength-bar-3"></div>
-              <div class="strength-bar" id="strength-bar-4"></div>
+          <div class="pw-wrap" style="position: relative; width: 100%;">
+            <input 
+              type="password" 
+              id="password" 
+              required 
+              placeholder="Enter your password"
+              style="width: 100%; border: 1.5px solid rgba(192,94,30,.2); border-radius: 8px; padding: 10px 12px; padding-right: 40px; font-size: 14px; outline: none; background: #fff;"
+              autocomplete="current-password"
+            >
+            <button 
+              type="button" 
+              id="toggle-password" 
+              class="pw-toggle" 
+              style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--muted-lite); font-size: 15px;"
+              aria-label="Toggle password visibility"
+            >👁️‍🗨️</button>
+          </div>
+          <p id="password-feedback" class="form-hint" style="font-size: 11px; margin-top: 2px;"></p>
+
+          <!-- Password Strength Indicator (Sign Up Only) -->
+          <div id="password-strength-container" class="hidden" style="margin-top: 8px;">
+            <div class="strength-bars" style="display: flex; gap: 4px;">
+              <div class="strength-bar" id="strength-bar-1" style="flex: 1; height: 3px; background: rgba(122,92,64,.2); border-radius: 2px;"></div>
+              <div class="strength-bar" id="strength-bar-2" style="flex: 1; height: 3px; background: rgba(122,92,64,.2); border-radius: 2px;"></div>
+              <div class="strength-bar" id="strength-bar-3" style="flex: 1; height: 3px; background: rgba(122,92,64,.2); border-radius: 2px;"></div>
+              <div class="strength-bar" id="strength-bar-4" style="flex: 1; height: 3px; background: rgba(122,92,64,.2); border-radius: 2px;"></div>
             </div>
-            <p id="strength-text" class="field-hint" style="margin-top: 6px;"></p>
+            <p id="strength-text" style="font-size: 11px; margin-top: 4px; font-weight: 600;"></p>
           </div>
         </div>
 
-        <div class="field hidden" id="confirm-password-field">
-          <label for="confirm-password">Confirm Password</label>
-          <input type="password" id="confirm-password" placeholder="Re-enter your password">
-          <p id="confirm-feedback" class="field-hint"></p>
-        </div>
-
-        <div id="remember-me-field" class="hidden">
-          <div class="checkbox-row">
-            <input type="checkbox" id="remember-me">
-            <label for="remember-me">Remember me for 30 days</label>
+        <!-- Confirm Password Field (Sign Up Only) -->
+        <div class="form-group-enhanced hidden" id="confirm-password-field" style="margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label for="confirm-password" style="font-size: 13px; font-weight: 600; color: var(--ink-soft);">Confirm Password</label>
+            <span id="confirm-check" class="input-status" style="font-size: 13px; font-weight: 700;"></span>
           </div>
-        </div>
-
-        <div id="two-fa-field" class="hidden">
-          <div class="checkbox-row">
-            <input type="checkbox" id="enable-2fa">
-            <label for="enable-2fa">Enable two-factor authentication (SMS)</label>
+          <div class="pw-wrap" style="position: relative; width: 100%;">
+            <input 
+              type="password" 
+              id="confirm-password" 
+              placeholder="Confirm your password"
+              style="width: 100%; border: 1.5px solid rgba(192,94,30,.2); border-radius: 8px; padding: 10px 12px; padding-right: 40px; font-size: 14px; outline: none; background: #fff;"
+              autocomplete="new-password"
+            >
+            <button 
+              type="button" 
+              id="toggle-confirm-password" 
+              class="pw-toggle" 
+              style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--muted-lite); font-size: 15px;"
+              aria-label="Toggle confirm password visibility"
+            >👁️‍🗨️</button>
           </div>
-          <p class="field-hint" style="padding-left: 27px;">📱 We'll send a code to verify your phone</p>
+          <p id="confirm-feedback" class="form-hint" style="font-size: 11px; margin-top: 2px;"></p>
         </div>
 
-        <button type="submit" id="auth-submit" class="btn btn-solid" style="width: 100%; justify-content: center; padding: 14px; margin-top: 8px;">
-          Sign In
+        <!-- Remember Me (Sign In Only) -->
+        <div id="remember-me-field" class="checkbox-field-enhanced hidden" style="margin-bottom: 16px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); cursor: pointer;">
+            <input type="checkbox" id="remember-me" style="accent-color: var(--ember); width: 15px; height: 15px;">
+            <span>Keep me signed in for 30 days</span>
+          </label>
+        </div>
+
+        <!-- Terms Agreement (Sign Up Only) -->
+        <div id="terms-field" class="checkbox-field-enhanced hidden" style="margin-bottom: 16px;">
+          <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; color: var(--muted); cursor: pointer;">
+            <input type="checkbox" id="agree-terms" style="accent-color: var(--ember); width: 15px; height: 15px; margin-top: 2px;">
+            <span>I agree to the <a href="#" style="color: var(--ember); font-weight: 600;">Terms of Service</a> &amp; <a href="#" style="color: var(--ember); font-weight: 600;">Privacy Policy</a></span>
+          </label>
+        </div>
+
+        <!-- Auth Message -->
+        <p id="auth-message" class="auth-message" style="text-align: center; margin-bottom: 12px; font-size: 13px; font-weight: 600;"></p>
+
+        <!-- Submit Button -->
+        <button 
+          type="submit" 
+          id="auth-submit" 
+          class="btn btn-solid"
+          style="width: 100%; justify-content: center; padding: 12px; margin-top: 8px; font-size: 15px;"
+        >
+          <span id="auth-submit-text">Sign In</span>
+          <span id="auth-submit-loader" class="btn-loader hidden">
+            <span class="spinner" style="width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; display: inline-block; animation: spin 1s linear infinite;"></span>
+          </span>
         </button>
-        <p id="auth-message" style="text-align: center; margin-top: 12px; font-size: 13px; color: #b81c1c;"></p>
       </form>
 
-      <hr class="form-divider">
+      <!-- Quick Demo Login (UX Upgrade) -->
+      <div id="demo-credentials-section" class="demo-badges-container" style="margin-top: 18px; text-align: center; border-top: 1px dashed rgba(192,94,30,.2); padding-top: 16px;">
+        <p style="font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 8px; font-family: var(--sans);">🚀 Quick Demo Accounts:</p>
+        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+          <button type="button" id="demo-maa-btn" class="demo-badge-btn">👩‍🍳 Maa (Admin)</button>
+          <button type="button" id="demo-customer-btn" class="demo-badge-btn">😋 Customer</button>
+        </div>
+      </div>
 
-      <p style="text-align: center; font-size: 14px; color: var(--muted);">
+      <!-- Social Login Divider -->
+      <hr class="form-divider" style="margin: 20px 0; border: none; border-top: 1px solid rgba(192,94,30,.15);">
+
+      <!-- Social Login Buttons -->
+      <div class="social-buttons-enhanced" style="margin-bottom: 20px;">
+        <button type="button" id="google-login-btn" class="social-btn social-btn-google" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; border: 1.5px solid rgba(192,94,30,.25); border-radius: 8px; padding: 10px; background: white; font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--ink-soft); cursor: pointer; transition: all 0.2s;" title="Sign in with Google">
+          <svg style="width: 18px; height: 18px; flex-shrink: 0;" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.85z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.85c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span class="social-text">Sign in with Google</span>
+        </button>
+      </div>
+
+      <!-- Toggle Auth Mode -->
+      <p style="text-align: center; font-size: 14px; color: var(--muted); margin: 0;">
+        <span id="toggle-prompt">Don't have an account?</span>
         <button id="toggle-auth" style="background: none; border: none; cursor: pointer; color: var(--ember); font-size: 14px; font-weight: 600; font-family: var(--sans); text-decoration: underline;">
-          Don't have an account? Sign Up
+          <span id="toggle-text">Create one</span>
         </button>
       </p>
 
-      <p style="text-align: center; font-size: 12px; color: var(--muted-lite); margin-top: 14px;">
+      <!-- Terms & Privacy Footer -->
+      <p style="text-align: center; font-size: 11px; color: var(--muted-lite); margin-top: 16px; line-height: 1.5;">
         By continuing, you agree to our
-        <button style="color: var(--ember); background: none; border: none; cursor: pointer; font-size: 12px; text-decoration: underline; font-family: var(--sans);">Terms of Service</button>
+        <a href="#" style="color: var(--ember); text-decoration: underline;">Terms of Service</a>
         and
-        <button style="color: var(--ember); background: none; border: none; cursor: pointer; font-size: 12px; text-decoration: underline; font-family: var(--sans);">Privacy Policy</button>
+        <a href="#" style="color: var(--ember); text-decoration: underline;">Privacy Policy</a>
       </p>
+    </div>
+  </div>
+</div>
+
+<!-- Google Account Chooser Modal (High-Fidelity Simulation) -->
+<div id="google-chooser-modal" class="modal-overlay hidden" style="z-index: 1000; position: fixed; inset: 0; background: rgba(26,14,5,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;">
+  <div class="modal-box" style="max-width: 400px; background: white; color: #3c4043; border-radius: 8px; padding: 36px; box-shadow: 0 4px 24px rgba(26,14,5,0.25); font-family: 'Roboto', 'Plus Jakarta Sans', sans-serif; position: relative;">
+    <button id="close-google-chooser" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 18px; color: #5f6368; cursor: pointer; transition: color 0.2s;">✕</button>
+    
+    <div style="text-align: center; margin-bottom: 24px;">
+      <svg style="width: 24px; height: 24px; margin-bottom: 8px;" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.85z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.85c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      <h3 style="font-size: 22px; font-weight: 500; color: #202124; line-height: 30px; font-family: var(--sans);">Choose an account</h3>
+      <p style="font-size: 14px; color: #5f6368; margin-top: 4px; font-family: var(--sans);">to continue to <strong style="color: var(--ember);">SwaadSe.in</strong></p>
+    </div>
+    
+    <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 24px;" id="google-accounts-list">
+      <!-- Rudra Pratap Singh (User Info) -->
+      <div class="google-account-item" id="google-acct-user" style="display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #dadce0; cursor: pointer; transition: background-color 0.2s; border-radius: 4px;">
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--ember); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; margin-right: 12px; font-family: var(--sans);">RP</div>
+        <div style="text-align: left; flex: 1;">
+          <div style="font-size: 14px; font-weight: 600; color: #3c4043; font-family: var(--sans);">Rudra Pratap Singh</div>
+          <div style="font-size: 12px; color: #5f6368; font-family: var(--sans);">rudra.parmar@gmail.com</div>
+        </div>
+      </div>
+      
+      <!-- Guest Student -->
+      <div class="google-account-item" id="google-acct-guest" style="display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #dadce0; cursor: pointer; transition: background-color 0.2s; border-radius: 4px;">
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--ink-soft); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; margin-right: 12px; font-family: var(--sans);">GS</div>
+        <div style="text-align: left; flex: 1;">
+          <div style="font-size: 14px; font-weight: 600; color: #3c4043; font-family: var(--sans);">Guest Student</div>
+          <div style="font-size: 12px; color: #5f6368; font-family: var(--sans);">guest@swaadse.in</div>
+        </div>
+      </div>
+
+      <!-- Use another account -->
+      <div class="google-account-item" id="google-acct-new" style="display: flex; align-items: center; padding: 12px; cursor: pointer; transition: background-color 0.2s; border-radius: 4px;">
+        <div style="width: 32px; height: 32px; border-radius: 50%; border: 1px dashed #dadce0; color: #5f6368; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-right: 12px;">👤</div>
+        <div style="text-align: left; flex: 1;">
+          <div style="font-size: 14px; font-weight: 600; color: #1a73e8; font-family: var(--sans);">Use another account</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spinner Overlay during login -->
+    <div id="google-chooser-spinner" class="hidden" style="display: none; flex-direction: column; align-items: center; justify-content: center; position: absolute; inset: 0; background: white; border-radius: 8px; z-index: 10;">
+      <div class="google-spinner" style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #4285F4; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+      <p style="margin-top: 16px; font-size: 14px; color: #5f6368; font-weight: 500; font-family: var(--sans);">Signing in...</p>
+    </div>
+
+    <div style="text-align: left; font-size: 11px; color: #5f6368; line-height: 16px; font-family: var(--sans);">
+      To continue, Google will share your name, email address, language preference, and profile picture with SwaadSe.in. See our <a href="#" style="color: #1a73e8;">Privacy Policy</a> and <a href="#" style="color: #1a73e8;">Terms of Service</a>.
     </div>
   </div>
 </div>
@@ -1854,28 +2250,8 @@
   });
 
   /* ── Modal helpers ── */
-  const openModal  = id => document.getElementById(id)?.classList.remove('hidden');
-  const closeModal = id => document.getElementById(id)?.classList.add('hidden');
-
-  document.getElementById('close-modal-btn')?.addEventListener('click',  () => closeModal('planner-modal'));
-  document.getElementById('close-auth-modal')?.addEventListener('click', () => closeModal('auth-modal'));
-  document.getElementById('close-order-modal')?.addEventListener('click',() => closeModal('order-modal'));
-
-  ['planner-modal','auth-modal','order-modal'].forEach(id => {
-    document.getElementById(id)?.addEventListener('click', e => { if (e.target.id === id) closeModal(id); });
-  });
-
-  document.getElementById('sign-in-btn')?.addEventListener('click', e => { e.preventDefault(); openModal('auth-modal'); });
-  document.getElementById('mobile-sign-in')?.addEventListener('click', e => { e.preventDefault(); mobileMenu.classList.remove('open'); openModal('auth-modal'); });
-  document.getElementById('show-weekly-planner-btn')?.addEventListener('click', () => openModal('planner-modal'));
-  document.getElementById('login-prompt-btn')?.addEventListener('click', () => openModal('auth-modal'));
-  document.getElementById('menu-signin')?.addEventListener('click', () => openModal('auth-modal'));
-
-  /* ── Password toggle ── */
-  document.getElementById('toggle-password')?.addEventListener('click', () => {
-    const pw = document.getElementById('password');
-    pw.type = pw.type === 'password' ? 'text' : 'password';
-  });
+  window.openModal  = id => document.getElementById(id)?.classList.remove('hidden');
+  window.closeModal = id => document.getElementById(id)?.classList.add('hidden');
 </script>
 
 <script type="module" src="script.js"></script>
