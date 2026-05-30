@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Checkout - SwaadSe.in</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="swadse.css" />
+  <meta name="robots" content="noindex" />
+  <title>Checkout — SwaadSe.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="swadse-premium.css" />
   <style>
     :root {
       --ink: #1a0e05;
@@ -14,260 +15,78 @@
       --cream: #fffcf7;
       --serif: 'Playfair Display', Georgia, serif;
       --sans: 'Plus Jakarta Sans', sans-serif;
-      --shadow-md: 0 8px 32px rgba(26,14,5,.14);
     }
-
-    body {
-      font-family: var(--sans);
-      background: var(--sand);
-      color: var(--ink);
-    }
-
-    .checkout-container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 60px 24px;
-    }
-
-    .checkout-header {
-      text-align: center;
-      margin-bottom: 60px;
-    }
-
-    .checkout-header h1 {
-      font-family: var(--serif);
-      font-size: 2.5rem;
-      margin-bottom: 16px;
-    }
-
-    .checkout-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 32px;
-      margin-bottom: 40px;
-    }
-
-    .checkout-form {
+    body { font-family: var(--sans); background: var(--sand); color: var(--ink); margin: 0; }
+    .checkout-container { max-width: 1000px; margin: 0 auto; padding: 60px 24px; }
+    .checkout-header { text-align: center; margin-bottom: 48px; }
+    .checkout-header h1 { font-family: var(--serif); font-size: 2.5rem; }
+    .checkout-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 32px; }
+    .checkout-form, .order-summary {
       background: var(--cream);
       border: 1px solid rgba(192,94,30,.15);
       border-radius: 12px;
       padding: 32px;
     }
-
-    .form-group {
-      margin-bottom: 20px;
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 8px; }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 12px; border: 1px solid rgba(192,94,30,.2);
+      border-radius: 6px; font-family: var(--sans);
     }
-
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: var(--ink);
-    }
-
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid rgba(192,94,30,.2);
-      border-radius: 6px;
-      font-family: var(--sans);
-      font-size: 14px;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: var(--ember);
-      box-shadow: 0 0 0 3px rgba(192,94,30,.1);
-    }
-
-    .order-summary {
-      background: var(--cream);
-      border: 1px solid rgba(192,94,30,.15);
-      border-radius: 12px;
-      padding: 32px;
-      height: fit-content;
-    }
-
-    .summary-title {
-      font-family: var(--serif);
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-
-    .summary-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(192,94,30,.1);
-      font-size: 14px;
-    }
-
-    .summary-item:last-of-type {
-      border-bottom: none;
-    }
-
-    .summary-total {
-      display: flex;
-      justify-content: space-between;
-      padding: 16px 0;
-      margin-top: 16px;
-      border-top: 2px solid var(--ember);
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--ember);
-    }
-
+    .summary-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(192,94,30,.1); font-size: 14px; }
+    .summary-total { display: flex; justify-content: space-between; padding-top: 16px; margin-top: 8px; border-top: 2px solid var(--ember); font-size: 1.25rem; font-weight: 700; color: var(--ember); }
     .checkout-btn {
-      width: 100%;
-      background: var(--ember);
-      color: #fff;
-      border: none;
-      padding: 14px 28px;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 24px;
-      transition: background 0.2s;
+      width: 100%; background: var(--ember); color: #fff; border: none;
+      padding: 14px; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 20px;
     }
-
-    .checkout-btn:hover {
-      background: #8f4211;
-    }
-
-    .checkout-btn:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
-
-    @media (max-width: 768px) {
-      .checkout-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .checkout-header h1 {
-        font-size: 1.8rem;
-      }
-    }
+    .checkout-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    @media (max-width: 768px) { .checkout-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-<div class="checkout-container">
-  <div class="checkout-header">
-    <h1>Checkout</h1>
-    <p style="color: #7a5c40;">Complete your order</p>
-  </div>
-
-  <div class="checkout-grid">
-    <form class="checkout-form" id="checkout-form">
-      <h2 style="font-size: 1.4rem; margin-bottom: 24px; font-family: var(--serif);">Delivery Details</h2>
-      
-      <div class="form-group">
-        <label for="name">Full Name *</label>
-        <input type="text" id="name" name="name" required>
-      </div>
-
-      <div class="form-group">
-        <label for="email">Email Address *</label>
-        <input type="email" id="email" name="email" required>
-      </div>
-
-      <div class="form-group">
-        <label for="phone">Phone Number *</label>
-        <input type="tel" id="phone" name="phone" required>
-      </div>
-
-      <div class="form-group">
-        <label for="address">Delivery Address *</label>
-        <textarea id="address" name="address" rows="3" required></textarea>
-      </div>
-
-      <div class="form-group">
-        <label for="instructions">Special Instructions</label>
-        <textarea id="instructions" name="instructions" rows="2" placeholder="Allergies, preferences, etc."></textarea>
-      </div>
-    </form>
-
-    <div class="order-summary">
-      <h3 class="summary-title">Order Summary</h3>
-      <div id="summary-items">
-        <!-- Items will be inserted here from localStorage -->
-      </div>
-      <div class="summary-total">
-        <span>Total:</span>
-        <span id="total-amount">₹0</span>
-      </div>
-      <button class="checkout-btn" id="pay-btn" onclick="initiatePayment()">Pay Now</button>
+  <div class="checkout-container">
+    <div class="checkout-header">
+      <h1>Checkout</h1>
+      <p style="color: #7a5c40;">Secure payment · Homemade meals</p>
+    </div>
+    <div class="checkout-grid">
+      <form class="checkout-form" id="checkout-form" novalidate>
+        <h2 style="font-family: var(--serif); margin-bottom: 24px;">Delivery Details</h2>
+        <div class="form-group">
+          <label for="name">Full Name *</label>
+          <input type="text" id="name" name="name" required autocomplete="name" />
+        </div>
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone *</label>
+          <input type="tel" id="phone" name="phone" required autocomplete="tel" pattern="[0-9]{10,}" />
+        </div>
+        <div class="form-group">
+          <label for="address">Delivery Address *</label>
+          <textarea id="address" name="address" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="instructions">Special Instructions</label>
+          <textarea id="instructions" name="instructions" rows="2"></textarea>
+        </div>
+      </form>
+      <aside class="order-summary" aria-labelledby="summary-title">
+        <h3 id="summary-title" class="summary-title" style="font-family: var(--serif); margin: 0 0 16px;">Order Summary</h3>
+        <div id="summary-items"></div>
+        <div class="summary-total">
+          <span>Total</span>
+          <span id="total-amount">₹0</span>
+        </div>
+        <button type="button" class="checkout-btn" id="pay-btn">Pay Now</button>
+        <p style="font-size: 12px; color: #7a5c40; margin-top: 12px;">Without Razorpay keys, orders complete as pending (COD).</p>
+      </aside>
     </div>
   </div>
-</div>
-
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-  function loadOrderSummary() {
-    const cart = JSON.parse(localStorage.getItem('swaadse_cart') || '[]');
-    const summaryItems = document.getElementById('summary-items');
-    const totalAmount = document.getElementById('total-amount');
-    
-    if (cart.length === 0) {
-      summaryItems.innerHTML = '<p style="color: #7a5c40;">Your cart is empty. <a href="/">Go back to menu</a></p>';
-      return;
-    }
-
-    let total = 0;
-    summaryItems.innerHTML = cart.map(item => {
-      const itemTotal = item.price * item.qty;
-      total += itemTotal;
-      return `
-        <div class="summary-item">
-          <span>${item.name} x ${item.qty}</span>
-          <span>₹${itemTotal}</span>
-        </div>
-      `;
-    }).join('');
-
-    totalAmount.textContent = `₹${total}`;
-  }
-
-  function initiatePayment() {
-    const form = document.getElementById('checkout-form');
-    if (!form.checkValidity()) {
-      alert('Please fill in all required fields');
-      return;
-    }
-
-    const cart = JSON.parse(localStorage.getItem('swaadse_cart') || '[]');
-    const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-
-    const options = {
-      key: 'rzp_live_Vg9WXXXX', // Replace with your Razorpay key
-      amount: total * 100,
-      currency: 'INR',
-      name: 'SwaadSe.in',
-      description: 'Food Order Payment',
-      handler: function(response) {
-        // Payment successful
-        localStorage.removeItem('swaadse_cart');
-        window.location.href = `/success.html?orderId=${response.razorpay_payment_id}`;
-      },
-      prefill: {
-        name: form.name.value,
-        email: form.email.value,
-        contact: form.phone.value
-      },
-      theme: {
-        color: '#c05e1e'
-      }
-    };
-
-    const rzp = new Razorpay(options);
-    rzp.open();
-  }
-
-  // Load order summary on page load
-  document.addEventListener('DOMContentLoaded', loadOrderSummary);
-</script>
+  <script src="config/env.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script type="module" src="js/checkout-page.js"></script>
 </body>
 </html>

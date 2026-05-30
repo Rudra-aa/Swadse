@@ -1,0 +1,11 @@
+{
+  "name": "swadse",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SwaadSe.in — authentic home kitchen ordering",
+  "scripts": {
+    "build:env": "node scripts/build-env.mjs",
+    "setup:env": "cp -n .env.example .env 2>/dev/null || true && cp -n config/env.sample.js config/env.js 2>/dev/null || true",
+    "serve": "npx --yes serve . -l 3000"
+  }
+}

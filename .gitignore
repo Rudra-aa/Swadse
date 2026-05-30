@@ -7,6 +7,11 @@ yarn-error.log*
 .env
 .env.local
 .env.*.local
+config/env.js
+
+# Secrets & backups
+*.backup
+script.js.backup
 
 # Vercel
 .vercel/

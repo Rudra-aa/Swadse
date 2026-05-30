@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Payment Failed — SwaadSe.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="swadse-premium.css" />
+  <style>
+    :root { --ink: #1a0e05; --ember: #c05e1e; --sand: #fdf6ec; --cream: #fffcf7; --serif: 'Playfair Display', serif; --sans: 'Plus Jakarta Sans', sans-serif; }
+    body { font-family: var(--sans); background: var(--sand); color: var(--ink); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    .card { background: var(--cream); border-radius: 12px; padding: 48px 32px; max-width: 480px; text-align: center; box-shadow: 0 8px 32px rgba(26,14,5,.12); border: 1px solid rgba(192,94,30,.15); }
+    h1 { font-family: var(--serif); font-size: 1.75rem; margin: 16px 0 8px; }
+    .btn { display: inline-block; margin: 8px; padding: 12px 24px; border-radius: 6px; font-weight: 600; text-decoration: none; }
+    .btn-primary { background: var(--ember); color: #fff; }
+    .btn-secondary { border: 2px solid var(--ember); color: var(--ember); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div style="font-size: 4rem;" aria-hidden="true">✕</div>
+    <h1>Payment not completed</h1>
+    <p id="failure-message" style="color: #7a5c40; margin-bottom: 24px;">Something went wrong. You can try again or contact us on WhatsApp.</p>
+    <p style="font-size: 13px; color: #7a5c40;">Order ref: <strong id="order-id">—</strong></p>
+    <div style="margin-top: 28px;">
+      <a href="checkout.html" class="btn btn-primary">Try again</a>
+      <a href="index.html" class="btn btn-secondary">Back home</a>
+    </div>
+  </div>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const reason = params.get('reason');
+    const messages = {
+      cancelled: 'You closed the payment window. Your cart is still saved.',
+      failed: 'The payment provider reported a failure. Please try another method.',
+      verify: 'Payment was received but verification failed. Contact support with your order ID.',
+      error: 'We could not start checkout. Please sign in and try again.',
+    };
+    document.getElementById('failure-message').textContent = messages[reason] || messages.error;
+    document.getElementById('order-id').textContent = params.get('orderId') || '—';
+  </script>
+</body>
+</html>

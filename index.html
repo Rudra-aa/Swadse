@@ -3,11 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SwaadSe.in — Authentic Home Kitchen</title>
+  <title>SwaadSe.in — Authentic Home Kitchen | Gwalior</title>
+  <meta name="description" content="Fresh home-cooked Indian meals by Maa in Gwalior. Daily menu, meal plans, and delivery with love." />
+  <meta name="theme-color" content="#c05e1e" />
+  <link rel="canonical" href="https://swaadse.in/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://swaadse.in/" />
+  <meta property="og:title" content="SwaadSe.in — Authentic Home Kitchen" />
+  <meta property="og:description" content="Made by Maa, delivered with love. Homemade meals and flexible plans in Gwalior." />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1200&q=80" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FoodEstablishment","name":"SwaadSe.in","description":"Homemade Indian meals","address":{"@type":"PostalAddress","addressLocality":"Gwalior","addressRegion":"MP","postalCode":"474001","addressCountry":"IN"},"servesCuisine":"Indian","url":"https://swaadse.in"}
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="swadse-premium.css" />
 
   <style>
     /* ─── Design Tokens ─────────────────────────────────── */
@@ -1410,6 +1423,11 @@
 </head>
 <body>
 
+<div id="page-loader" role="status" aria-label="Loading">
+  <p class="loader-brand">SwaadSe<span>.in</span></p>
+</div>
+<div id="cursor-glow" aria-hidden="true"></div>
+
 <!-- ══════════════ HEADER ══════════════ -->
 <header id="site-header">
   <div class="header-inner">
@@ -1432,8 +1450,8 @@
         <button id="order-btn" class="btn btn-solid">Order Now</button>
         <button id="sign-out-btn">Sign Out</button>
       </div>
-      <a id="sign-in-btn" href="#" class="btn btn-solid desktop-only">Sign In</a>
-      <button class="hamburger" id="hamburger-btn" aria-label="Open menu">
+      <a id="sign-in-btn" href="#" class="btn btn-solid desktop-only" role="button">Sign In</a>
+      <button class="hamburger" id="hamburger-btn" aria-label="Open navigation menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -1456,6 +1474,8 @@
 
 <!-- ══════════════ HERO ══════════════ -->
 <section id="home" style="position: relative; min-height: 90vh; display: flex; align-items: flex-end; overflow: hidden;">
+  <canvas id="particles-canvas" aria-hidden="true"></canvas>
+  <div id="hero-3d" role="img" aria-label="माँ — decorative calligraphy"></div>
   <img
     class="hero-bg"
     src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1920&q=85"
@@ -1666,8 +1686,8 @@
       </p>
 
       <div class="pricing-toggle">
-        <button class="toggle-btn active" onclick="togglePricing('weekly')">📅 Weekly Plans</button>
-        <button class="toggle-btn" onclick="togglePricing('monthly')">📆 Monthly Plans</button>
+        <button type="button" class="toggle-btn active" onclick="togglePricing('weekly', this)">📅 Weekly Plans</button>
+        <button type="button" class="toggle-btn" onclick="togglePricing('monthly', this)">📆 Monthly Plans</button>
       </div>
     </div>
 
@@ -1684,7 +1704,7 @@
           <li>Roti, rice & salad</li>
           <li>Fresh daily preparation</li>
         </ul>
-        <button class="btn btn-solid pricing-cta">Choose Plan</button>
+        <button type="button" class="btn btn-solid pricing-cta" data-plan="single-meal" data-plan-name="Single Meal" data-plan-price="180">Choose Plan</button>
       </div>
 
       <div class="pricing-card featured">
@@ -1700,7 +1720,7 @@
           <li>Customization available</li>
           <li>Fresh & hot guarantee</li>
         </ul>
-        <button class="btn btn-solid pricing-cta">Choose Plan</button>
+        <button type="button" class="btn btn-solid pricing-cta" data-plan="weekly-5" data-plan-name="Weekly 5-Day" data-plan-price="799">Choose Plan</button>
       </div>
 
       <div class="pricing-card">
@@ -1714,7 +1734,7 @@
           <li>Pickup or delivery</li>
           <li>Special weekend recipes</li>
         </ul>
-        <button class="btn btn-solid pricing-cta">Choose Plan</button>
+        <button type="button" class="btn btn-solid pricing-cta" data-plan="weekend-combo" data-plan-name="Weekend Combo" data-plan-price="399">Choose Plan</button>
       </div>
     </div>
 
@@ -1732,7 +1752,7 @@
           <li>Menu flexibility</li>
           <li>Customer support</li>
         </ul>
-        <button class="btn btn-solid pricing-cta">Choose Plan</button>
+        <button type="button" class="btn btn-solid pricing-cta" data-plan="light-monthly" data-plan-name="Light Plan" data-plan-price="1649">Choose Plan</button>
       </div>
 
       <div class="pricing-card featured">
@@ -1749,7 +1769,7 @@
           <li>Priority support</li>
           <li>₹160 per meal</li>
         </ul>
-        <button class="btn btn-solid pricing-cta">Choose Plan</button>
+        <button type="button" class="btn btn-solid pricing-cta" data-plan="standard-monthly" data-plan-name="Standard Plan" data-plan-price="3199">Choose Plan</button>
       </div>
 
       <div class="pricing-card">
@@ -1765,29 +1785,10 @@
           <li>VIP customer support</li>
           <li>₹146 per meal</li>
         </ul>
-        <button class="btn btn-solid pricing-cta">Choose Plan</button>
+        <button type="button" class="btn btn-solid pricing-cta" data-plan="premium-monthly" data-plan-name="Premium Plan" data-plan-price="4399">Choose Plan</button>
       </div>
     </div>
   </div>
-
-  <script>
-    function togglePricing(type) {
-      const weeklyPricing = document.getElementById('weekly-pricing');
-      const monthlyPricing = document.getElementById('monthly-pricing');
-      const buttons = document.querySelectorAll('.toggle-btn');
-
-      buttons.forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
-
-      if (type === 'weekly') {
-        weeklyPricing.style.display = 'grid';
-        monthlyPricing.style.display = 'none';
-      } else {
-        weeklyPricing.style.display = 'none';
-        monthlyPricing.style.display = 'grid';
-      }
-    }
-  </script>
 </section>
 
 <!-- ══════════════ CONTACT ══════════════ -->
@@ -1800,36 +1801,34 @@
       <p class="subtitle" style="margin: 18px auto 0;">For orders, questions, or feedback — we're always happy to hear from you.</p>
     </div>
 
-    <!-- Contact Information -->
-    <!--<div class="contact-grid reveal">
+    <div class="contact-grid reveal">
       <div class="contact-card">
         <div class="contact-card-label">
           <span>📞</span> Phone &amp; WhatsApp
         </div>
         <div id="phone-display">
           <div class="contact-card-value locked">🔒 Available after login</div>
-          <button id="login-prompt-btn" class="btn btn-ghost" style="margin-top: 18px; font-size: 12px; padding: 10px 20px;">
+          <button type="button" class="btn btn-ghost login-prompt-btn" style="margin-top: 18px; font-size: 12px; padding: 10px 20px;">
             Sign In to View
           </button>
         </div>
         <div id="phone-actual" class="hidden">
-          <div class="contact-card-value">+91 </div>
+          <div id="contact-phone-value" class="contact-card-value"></div>
         </div>
-      </div> -->
+      </div>
 
-      <div class="contact-grid reveal">
       <div class="contact-card">
         <div class="contact-card-label">
-          <span>📩</span> contact us &amp; email id    
+          <span>📩</span> Email
         </div>
         <div id="email-display">
           <div class="contact-card-value locked" style="font-size: 16px;">🔒 Available after login</div>
-          <button class="btn btn-ghost login-prompt-btn" style="margin-top: 18px; font-size: 12px; padding: 10px 20px;">
+          <button type="button" class="btn btn-ghost login-prompt-btn" style="margin-top: 18px; font-size: 12px; padding: 10px 20px;">
             Sign In to View
           </button>
         </div>
         <div id="email-actual" class="hidden">
-          <div class="contact-card-value" style="word-break: break-all;">arjunthakurr420@gmail.com</div>
+          <div id="contact-email-value" class="contact-card-value" style="word-break: break-all;"></div>
         </div>
       </div>
 
@@ -2092,66 +2091,10 @@
       <!-- Terms & Privacy Footer -->
       <p style="text-align: center; font-size: 11px; color: var(--muted-lite); margin-top: 16px; line-height: 1.5;">
         By continuing, you agree to our
-        <a href="#" style="color: var(--ember); text-decoration: underline;">Terms of Service</a>
+        <a href="terms.html" style="color: var(--ember); text-decoration: underline;">Terms of Service</a>
         and
-        <a href="#" style="color: var(--ember); text-decoration: underline;">Privacy Policy</a>
+        <a href="privacy.html" style="color: var(--ember); text-decoration: underline;">Privacy Policy</a>
       </p>
-    </div>
-  </div>
-</div>
-
-<!-- Google Account Chooser Modal (High-Fidelity Simulation) -->
-<div id="google-chooser-modal" class="modal-overlay hidden" style="z-index: 1000; position: fixed; inset: 0; background: rgba(26,14,5,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;">
-  <div class="modal-box" style="max-width: 400px; background: white; color: #3c4043; border-radius: 8px; padding: 36px; box-shadow: 0 4px 24px rgba(26,14,5,0.25); font-family: 'Roboto', 'Plus Jakarta Sans', sans-serif; position: relative;">
-    <button id="close-google-chooser" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 18px; color: #5f6368; cursor: pointer; transition: color 0.2s;">✕</button>
-    
-    <div style="text-align: center; margin-bottom: 24px;">
-      <svg style="width: 24px; height: 24px; margin-bottom: 8px;" viewBox="0 0 24 24">
-        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.85z"/>
-        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.85c.87-2.6 3.3-4.53 6.16-4.53z"/>
-      </svg>
-      <h3 style="font-size: 22px; font-weight: 500; color: #202124; line-height: 30px; font-family: var(--sans);">Choose an account</h3>
-      <p style="font-size: 14px; color: #5f6368; margin-top: 4px; font-family: var(--sans);">to continue to <strong style="color: var(--ember);">SwaadSe.in</strong></p>
-    </div>
-    
-    <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 24px;" id="google-accounts-list">
-      <!-- Rudra Pratap Singh (User Info) -->
-      <div class="google-account-item" id="google-acct-user" style="display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #dadce0; cursor: pointer; transition: background-color 0.2s; border-radius: 4px;">
-        <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--ember); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; margin-right: 12px; font-family: var(--sans);">RP</div>
-        <div style="text-align: left; flex: 1;">
-          <div style="font-size: 14px; font-weight: 600; color: #3c4043; font-family: var(--sans);">Rudra Pratap Singh</div>
-          <div style="font-size: 12px; color: #5f6368; font-family: var(--sans);">rudra.parmar@gmail.com</div>
-        </div>
-      </div>
-      
-      <!-- Guest Student -->
-      <div class="google-account-item" id="google-acct-guest" style="display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #dadce0; cursor: pointer; transition: background-color 0.2s; border-radius: 4px;">
-        <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--ink-soft); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; margin-right: 12px; font-family: var(--sans);">GS</div>
-        <div style="text-align: left; flex: 1;">
-          <div style="font-size: 14px; font-weight: 600; color: #3c4043; font-family: var(--sans);">Guest Student</div>
-          <div style="font-size: 12px; color: #5f6368; font-family: var(--sans);">guest@swaadse.in</div>
-        </div>
-      </div>
-
-      <!-- Use another account -->
-      <div class="google-account-item" id="google-acct-new" style="display: flex; align-items: center; padding: 12px; cursor: pointer; transition: background-color 0.2s; border-radius: 4px;">
-        <div style="width: 32px; height: 32px; border-radius: 50%; border: 1px dashed #dadce0; color: #5f6368; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-right: 12px;">👤</div>
-        <div style="text-align: left; flex: 1;">
-          <div style="font-size: 14px; font-weight: 600; color: #1a73e8; font-family: var(--sans);">Use another account</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Spinner Overlay during login -->
-    <div id="google-chooser-spinner" class="hidden" style="display: none; flex-direction: column; align-items: center; justify-content: center; position: absolute; inset: 0; background: white; border-radius: 8px; z-index: 10;">
-      <div class="google-spinner" style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #4285F4; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-      <p style="margin-top: 16px; font-size: 14px; color: #5f6368; font-weight: 500; font-family: var(--sans);">Signing in...</p>
-    </div>
-
-    <div style="text-align: left; font-size: 11px; color: #5f6368; line-height: 16px; font-family: var(--sans);">
-      To continue, Google will share your name, email address, language preference, and profile picture with SwaadSe.in. See our <a href="#" style="color: #1a73e8;">Privacy Policy</a> and <a href="#" style="color: #1a73e8;">Terms of Service</a>.
     </div>
   </div>
 </div>
@@ -2225,35 +2168,10 @@
 <div class="toast-container" id="toast-container"></div>
 
 <!-- ══════════════ SCRIPTS ══════════════ -->
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-<script>
-  /* ── Scroll reveal ── */
-  const revealObserver = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('in'); revealObserver.unobserve(e.target); }
-    });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-  /* ── Mobile nav ── */
-  const hamburger = document.getElementById('hamburger-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
-  hamburger?.addEventListener('click', () => mobileMenu.classList.toggle('open'));
-  mobileMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
-
-  /* ── Language toggle ── */
-  document.getElementById('lang-select')?.addEventListener('change', function () {
-    document.getElementById('about-en').style.display = this.value === 'hi' ? 'none' : '';
-    document.getElementById('about-hi').style.display = this.value === 'hi' ? '' : 'none';
-  });
-
-  /* ── Modal helpers ── */
-  window.openModal  = id => document.getElementById(id)?.classList.remove('hidden');
-  window.closeModal = id => document.getElementById(id)?.classList.add('hidden');
-</script>
-
-<script type="module" src="script.js"></script>
+<script src="config/env.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+<script type="module" src="js/app.js"></script>
 </body>
 </html>

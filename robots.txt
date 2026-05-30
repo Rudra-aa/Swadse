@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://swaadse.in/sitemap.xml
+
+Disallow: /checkout.html
+Disallow: /failure.html
+Disallow: /config/
