@@ -7,6 +7,23 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const envPath = join(root, '.env');
 const outPath = join(root, 'config', 'env.js');
 
+const ENV_KEYS = [
+  'APP_ENV',
+  'FIREBASE_API_KEY',
+  'FIREBASE_AUTH_DOMAIN',
+  'FIREBASE_PROJECT_ID',
+  'FIREBASE_STORAGE_BUCKET',
+  'FIREBASE_MESSAGING_SENDER_ID',
+  'FIREBASE_APP_ID',
+  'FIREBASE_MEASUREMENT_ID',
+  'PAYMENT_PUBLIC_KEY',
+  'PAYMENT_VERIFY_URL',
+  'ADMIN_EMAILS',
+  'CONTACT_EMAIL',
+  'CONTACT_PHONE',
+  'SITE_URL',
+];
+
 function parseEnv(content) {
   const env = {};
   for (const line of content.split('\n')) {
@@ -24,15 +41,30 @@ function parseEnv(content) {
   return env;
 }
 
-if (!existsSync(envPath)) {
-  console.error('Missing .env — copy .env.example to .env and fill values.');
-  process.exit(1);
+function fromProcessEnv() {
+  const env = {};
+  for (const key of ENV_KEYS) {
+    if (process.env[key]) env[key] = process.env[key];
+  }
+  return env;
 }
 
-const env = parseEnv(readFileSync(envPath, 'utf8'));
+function loadEnv() {
+  const merged = { ...fromProcessEnv() };
+  if (existsSync(envPath)) {
+    Object.assign(merged, parseEnv(readFileSync(envPath, 'utf8')), fromProcessEnv());
+  }
+  return merged;
+}
+
+const env = loadEnv();
+
+if (!env.FIREBASE_API_KEY && !env.FIREBASE_PROJECT_ID) {
+  console.warn('[build-env] Warning: Firebase vars missing — auth will not work until env is set.');
+}
 
 const config = {
-  appEnv: env.APP_ENV || 'development',
+  appEnv: env.APP_ENV || 'production',
   firebase: {
     apiKey: env.FIREBASE_API_KEY || '',
     authDomain: env.FIREBASE_AUTH_DOMAIN || '',
@@ -52,6 +84,6 @@ const config = {
 
 mkdirSync(dirname(outPath), { recursive: true });
 
-const file = `/* Auto-generated — do not commit secrets */\nwindow.__SWADSE_CONFIG__ = ${JSON.stringify(config, null, 2)};\n`;
+const file = `/* Auto-generated at build — do not commit */\nwindow.__SWADSE_CONFIG__ = ${JSON.stringify(config, null, 2)};\n`;
 writeFileSync(outPath, file);
 console.log('Wrote config/env.js');

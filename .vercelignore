@@ -1,0 +1,4 @@
+# Generated at build — do not commit
+config/env.js
+.env
+.env.*

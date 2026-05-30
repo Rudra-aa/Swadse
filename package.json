@@ -4,6 +4,7 @@
   "private": true,
   "description": "SwaadSe.in — authentic home kitchen ordering",
   "scripts": {
+    "build": "node scripts/build-env.mjs",
     "build:env": "node scripts/build-env.mjs",
     "setup:env": "cp -n .env.example .env 2>/dev/null || true",
     "serve": "npx --yes serve . -l 3000"
