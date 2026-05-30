@@ -1631,9 +1631,6 @@
           Our menu changes daily with the freshest ingredients. Sign in to browse and place your order.
         </p>
       </div>
-      <button id="show-weekly-planner-btn" class="btn btn-ghost" style="flex-shrink: 0;">
-        ✦ Suggest Weekly Plan
-      </button>
     </div>
 
     <!-- Sign-in prompt (shown when logged out) -->
@@ -1642,7 +1639,7 @@
       <button id="menu-signin" class="btn btn-solid">Sign In to View Menu</button>
     </div>
 
-    <!-- Menu items injected by script.js -->
+    <!-- Menu items injected by js/menu.js -->
     <div id="menu-container" class="menu-grid reveal"></div>
   </div>
 </section>
@@ -1863,10 +1860,6 @@
         <div class="field" style="grid-column: 1 / -1; position: relative;">
           <label for="itemDescription">Description</label>
           <textarea id="itemDescription" name="itemDescription" rows="3" required placeholder="Describe the dish…"></textarea>
-          <button type="button" id="generate-description-btn" class="btn btn-dark"
-            style="position: absolute; bottom: 12px; right: 12px; font-size: 11px; padding: 7px 14px;">
-            ✦ Auto-generate
-          </button>
         </div>
 
         <div class="field">
@@ -1910,20 +1903,7 @@
 
 <!-- ══════════════ MODALS ══════════════ -->
 
-<!-- Weekly Planner Modal -->
-<div id="planner-modal" class="modal-overlay hidden">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3>✦ Weekly Meal Plan</h3>
-      <button id="close-modal-btn" class="modal-close" aria-label="Close">✕</button>
-    </div>
-    <div id="modal-content" class="modal-body">
-      <div id="modal-loader"><div class="spinner"></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- Auth Modal - Completely Rebuilt -->
+<!-- Auth Modal -->
 <div id="auth-modal" class="modal-overlay hidden">
   <div class="modal-box auth-modal-enhanced">
     <!-- Header -->
@@ -2034,7 +2014,7 @@
         <div id="terms-field" class="checkbox-field-enhanced hidden" style="margin-bottom: 16px;">
           <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; color: var(--muted); cursor: pointer;">
             <input type="checkbox" id="agree-terms" style="accent-color: var(--ember); width: 15px; height: 15px; margin-top: 2px;">
-            <span>I agree to the <a href="#" style="color: var(--ember); font-weight: 600;">Terms of Service</a> &amp; <a href="#" style="color: var(--ember); font-weight: 600;">Privacy Policy</a></span>
+            <span>I agree to the <a href="terms.html" style="color: var(--ember); font-weight: 600;">Terms of Service</a> &amp; <a href="privacy.html" style="color: var(--ember); font-weight: 600;">Privacy Policy</a></span>
           </label>
         </div>
 
@@ -2095,46 +2075,6 @@
         and
         <a href="privacy.html" style="color: var(--ember); text-decoration: underline;">Privacy Policy</a>
       </p>
-    </div>
-  </div>
-</div>
-
-<!-- Order Modal -->
-<div id="order-modal" class="modal-overlay hidden">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3>Place Your Order</h3>
-      <button id="close-order-modal" class="modal-close" aria-label="Close">✕</button>
-    </div>
-    <div class="modal-body">
-      <form id="order-form">
-        <div class="field">
-          <label for="order-name">Full Name</label>
-          <input type="text" id="order-name" required placeholder="Your name">
-        </div>
-        <div class="field">
-          <label for="order-phone">Phone Number</label>
-          <input type="tel" id="order-phone" required placeholder="+91 XXXXX XXXXX">
-        </div>
-        <div class="field">
-          <label for="order-email">Email Address</label>
-          <input type="email" id="order-email" required placeholder="you@example.com">
-        </div>
-        <div class="field">
-          <label>Select Items</label>
-          <div id="order-items" style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
-            <!-- Populated by script.js -->
-          </div>
-        </div>
-        <div class="field">
-          <label for="order-message">Special Instructions</label>
-          <textarea id="order-message" rows="3" placeholder="Allergies, delivery notes, preferences…"></textarea>
-        </div>
-        <button type="submit" id="submit-order" class="btn btn-solid" style="width: 100%; justify-content: center; padding: 14px;">
-          Confirm Order
-        </button>
-        <p id="order-status" style="text-align: center; margin-top: 14px; font-size: 13px; color: #2a6644;"></p>
-      </form>
     </div>
   </div>
 </div>

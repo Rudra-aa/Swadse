@@ -3,7 +3,7 @@ import { hidePageLoader, openModal, closeModal } from './ui.js';
 import { loadCart, addToCart, setupCartListeners } from './cart.js';
 import { setupAuth, openAuthModal } from './auth.js';
 import { setupMenuListener, setupAdminForm, teardownMenuListener } from './menu.js';
-import { setupOrderForm, goToCheckoutPage, initiateOrderModal } from './orders.js';
+import { goToCheckoutPage } from './orders.js';
 import { initMotion } from './motion.js';
 import { initHero3D } from './hero3d.js';
 
@@ -22,7 +22,6 @@ async function bootstrap() {
     },
   });
 
-  setupOrderForm();
   setupCartListeners({ onCheckout: goToCheckoutPage });
   setupPricingListeners();
   setupGlobalUI();
@@ -89,10 +88,8 @@ function setupGlobalUI() {
     a.addEventListener('click', () => mobileMenu.classList.remove('open'));
   });
 
-  ['auth-modal', 'order-modal', 'planner-modal'].forEach((id) => {
-    document.getElementById(id)?.addEventListener('click', (e) => {
-      if (e.target.id === id) closeModal(id);
-    });
+  document.getElementById('auth-modal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'auth-modal') closeModal('auth-modal');
   });
 
   document.getElementById('lang-select')?.addEventListener('change', function () {
@@ -118,11 +115,6 @@ function setupGlobalUI() {
     }
   };
 
-  document.getElementById('show-weekly-planner-btn')?.addEventListener('click', () => {
-    openModal('planner-modal');
-  });
-
-  document.getElementById('close-modal-btn')?.addEventListener('click', () => closeModal('planner-modal'));
 }
 
 function setupContactPrompts() {

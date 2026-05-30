@@ -31,8 +31,7 @@ Production-ready static web app for **SwaadSe.in**: homemade meals, daily menu, 
 ├── success.html / failure.html
 ├── swadse-premium.css      # Premium UI layer
 ├── config/
-│   ├── env.sample.js       # Template (committed)
-│   └── env.js              # Generated/local (gitignored)
+│   └── env.js              # Generated from .env (gitignored)
 ├── js/
 │   ├── app.js              # Bootstrap
 │   ├── config.js           # Config reader
@@ -64,7 +63,7 @@ npm run serve
 # Open http://localhost:3000
 ```
 
-If `config/env.js` is missing, copy `config/env.sample.js` to `config/env.js` and fill Firebase public keys.
+If `config/env.js` is missing, run `npm run build:env` after filling `.env`.
 
 ## Environment setup
 

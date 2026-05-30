@@ -23,7 +23,7 @@ export function assertFirebaseConfig() {
     console.warn(
       '[Swadse] Missing Firebase config:',
       missing.join(', '),
-      '— copy config/env.sample.js to config/env.js'
+      '— copy .env.example to .env and run npm run build:env'
     );
     return false;
   }
