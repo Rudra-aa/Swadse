@@ -213,3 +213,116 @@ body.modal-open { overflow: hidden; }
   transform: translateY(-6px) scale(1.02);
   box-shadow: var(--shadow-lg);
 }
+
+.admin-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--ember);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-right: 6px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .admin-grid { grid-template-columns: 1fr; }
+}
+
+.admin-card {
+  background: var(--cream);
+  border: 1px solid rgba(192, 94, 30, 0.15);
+  border-radius: var(--rad-lg, 12px);
+  padding: 28px;
+}
+
+.admin-card__title {
+  font-family: var(--serif, Georgia, serif);
+  font-size: 1.25rem;
+  margin-bottom: 20px;
+}
+
+.admin-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.admin-orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.admin-order-card {
+  border: 1px solid rgba(192, 94, 30, 0.12);
+  border-radius: 8px;
+  padding: 14px;
+  background: rgba(192, 94, 30, 0.03);
+}
+
+.admin-order-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-order-status {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(192, 94, 30, 0.15);
+}
+
+.admin-order-status--delivered { background: #dcfce7; color: #166534; }
+.admin-order-status--cancelled { background: #fee2e2; color: #991b1b; }
+.admin-order-status--confirmed { background: #fef3c7; color: #92400e; }
+
+.admin-order-meta,
+.admin-order-items {
+  font-size: 13px;
+  color: var(--muted, #7a5c40);
+  margin-top: 6px;
+}
+
+.admin-order-card__foot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.admin-order-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-loading,
+.admin-empty {
+  color: var(--muted, #7a5c40);
+  font-size: 14px;
+  text-align: center;
+  padding: 24px;
+}
+
+.admin-form-msg {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 13px;
+  color: #2a6644;
+}

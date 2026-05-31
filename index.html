@@ -1447,6 +1447,7 @@
           <span class="cart-badge" id="cart-badge" style="display: none;">0</span>
         </div>
         <span id="user-email" class="hidden" style="color: var(--muted); font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; display: inline-block; vertical-align: middle; margin-right: 8px;"></span>
+        <span id="admin-badge" class="hidden admin-badge" title="Administrator">Admin</span>
         <button id="order-btn" class="btn btn-solid">Order Now</button>
         <button id="sign-out-btn">Sign Out</button>
       </div>
@@ -1845,39 +1846,46 @@
 </main>
 
 <!-- ══════════════ ADMIN PANEL ══════════════ -->
-<section id="admin-panel" style="display: none;">
-  <div class="container" style="max-width: 720px;">
+<section id="admin-panel" class="section-pad" style="display: none;" aria-label="Admin dashboard">
+  <div class="container" style="max-width: 960px;">
     <span class="eyebrow">Admin</span>
-    <h2 class="display-title" style="margin-bottom: 32px;">Add Menu Item</h2>
+    <h2 class="display-title" style="margin-bottom: 12px;">Dashboard</h2>
+    <p class="subtitle" style="margin-bottom: 32px;">Manage menu, orders, and deliveries.</p>
 
-    <form id="add-menu-item-form" style="background: var(--cream); border: 1px solid rgba(192,94,30,.18); border-radius: var(--rad-lg); padding: 36px;">
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-        <div class="field" style="grid-column: 1 / -1;">
-          <label for="itemName">Item Name</label>
-          <input type="text" id="itemName" name="itemName" required placeholder="e.g. Rajma Chawal">
-        </div>
-
-        <div class="field" style="grid-column: 1 / -1; position: relative;">
-          <label for="itemDescription">Description</label>
-          <textarea id="itemDescription" name="itemDescription" rows="3" required placeholder="Describe the dish…"></textarea>
-        </div>
-
-        <div class="field">
-          <label for="itemPrice">Price (₹)</label>
-          <input type="number" id="itemPrice" name="itemPrice" required placeholder="250">
-        </div>
-
-        <div class="field">
-          <label for="itemImage">Image Keyword</label>
-          <input type="text" id="itemImage" name="itemImage" placeholder="e.g. Rajma+Chawal" required>
-        </div>
+    <div class="admin-grid">
+      <div class="admin-card">
+        <h3 class="admin-card__title">Add Menu Item</h3>
+        <form id="add-menu-item-form">
+          <div class="field">
+            <label for="itemName">Item Name</label>
+            <input type="text" id="itemName" name="itemName" required placeholder="e.g. Rajma Chawal">
+          </div>
+          <div class="field">
+            <label for="itemDescription">Description</label>
+            <textarea id="itemDescription" name="itemDescription" rows="3" required placeholder="Describe the dish…"></textarea>
+          </div>
+          <div class="admin-form-row">
+            <div class="field">
+              <label for="itemPrice">Price (₹)</label>
+              <input type="number" id="itemPrice" name="itemPrice" required placeholder="250">
+            </div>
+            <div class="field">
+              <label for="itemImage">Image Keyword</label>
+              <input type="text" id="itemImage" name="itemImage" placeholder="Rajma+Chawal" required>
+            </div>
+          </div>
+          <button type="submit" id="submit-menu-item" class="btn btn-solid" style="width: 100%; margin-top: 8px;">
+            Add to Menu
+          </button>
+          <p id="admin-message" class="admin-form-msg"></p>
+        </form>
       </div>
 
-      <button type="submit" id="submit-menu-item" class="btn btn-solid" style="width: 100%; justify-content: center; margin-top: 8px; padding: 14px;">
-        Add to Menu
-      </button>
-      <p id="admin-message" style="text-align: center; margin-top: 14px; font-size: 14px; color: #2a6644;"></p>
-    </form>
+      <div class="admin-card">
+        <h3 class="admin-card__title">Recent Orders</h3>
+        <div id="admin-orders-list" class="admin-orders-list"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -2109,6 +2117,11 @@
 
 <!-- ══════════════ SCRIPTS ══════════════ -->
 <script src="config/env.js"></script>
+<script>
+  if (!window.__SWADSE_CONFIG__?.firebase?.apiKey) {
+    document.write('<script src="config/env.example.js"><\\/script>');
+  }
+</script>
 <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>

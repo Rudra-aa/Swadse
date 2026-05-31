@@ -1,5 +1,6 @@
 import { initFirebase } from './firebase.js';
-import { hidePageLoader, openModal, closeModal } from './ui.js';
+import { hidePageLoader, openModal, closeModal, showToast } from './ui.js';
+import { isFirebaseConfigured } from './config.js';
 import { loadCart, addToCart, setupCartListeners } from './cart.js';
 import { setupAuth, openAuthModal } from './auth.js';
 import { setupMenuListener, setupAdminForm, teardownMenuListener } from './menu.js';
@@ -8,7 +9,11 @@ import { initMotion } from './motion.js';
 import { initHero3D } from './hero3d.js';
 
 async function bootstrap() {
-  await initFirebase();
+  const { auth } = await initFirebase();
+
+  if (!auth) {
+    showConfigBanner();
+  }
 
   loadCart();
   setupAuth({
@@ -124,6 +129,19 @@ function setupContactPrompts() {
       openAuthModal('signin');
     });
   });
+}
+
+function showConfigBanner() {
+  if (document.getElementById('config-banner') || isFirebaseConfigured()) return;
+  const banner = document.createElement('div');
+  banner.id = 'config-banner';
+  banner.setAttribute('role', 'alert');
+  banner.style.cssText =
+    'position:fixed;top:0;left:0;right:0;z-index:100001;background:#991b1b;color:#fff;padding:12px 16px;text-align:center;font-size:14px;font-weight:600;';
+  banner.textContent =
+    'Firebase not configured — copy config/env.example.js to config/env.js then refresh.';
+  document.body.prepend(banner);
+  document.body.style.paddingTop = '48px';
 }
 
 if (document.getElementById('site-header')) {

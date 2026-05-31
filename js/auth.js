@@ -7,13 +7,12 @@ import {
 } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
 import { doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 import { getFirebase } from './firebase.js';
-import { getConfig } from './config.js';
-import { showToast, openModal, closeModal } from './ui.js';
+import { getConfig, getAdminEmails } from './config.js';
 import { setCartUser, loadCart, clearCart } from './cart.js';
 
-const ADMIN_EMAILS = (typeof window !== 'undefined' && window.__SWADSE_CONFIG__?.adminEmails) || [
-  'admin@swadse.in',
-];
+function isAdminEmail(email) {
+  return Boolean(email && getAdminEmails().includes(email.toLowerCase().trim()));
+}
 
 let authMode = 'signin';
 let currentUser = null;
@@ -28,15 +27,36 @@ export function getCurrentUserRole() {
   return currentUserRole;
 }
 
+export async function ensureAdminProfile(user) {
+  if (!user?.email || !isAdminEmail(user.email)) return;
+  const { db } = getFirebase();
+  if (!db) return;
+  try {
+    await setDoc(
+      doc(db, 'users', user.uid),
+      {
+        email: user.email,
+        role: 'admin',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+      { merge: true }
+    );
+    currentUserRole = 'admin';
+  } catch (err) {
+    console.warn('[Swadse] Admin profile write failed (check Firestore rules):', err);
+    currentUserRole = 'admin';
+  }
+}
+
 export async function checkUserRole(uid, email) {
+  if (isAdminEmail(email)) {
+    currentUserRole = 'admin';
+    return 'admin';
+  }
   const { db } = getFirebase();
   if (!db) return 'user';
-
   try {
-    if (email && ADMIN_EMAILS.includes(email.toLowerCase())) {
-      currentUserRole = 'admin';
-      return 'admin';
-    }
     const userDoc = await getDoc(doc(db, 'users', uid));
     if (userDoc.exists()) {
       currentUserRole = userDoc.data().role || 'user';
@@ -133,8 +153,14 @@ export function setUserUI(user) {
   const mobileUserEmail = document.getElementById('mobile-user-email');
 
   if (user) {
-    userActions?.classList.add('visible');
-    signInBtn?.classList.add('hidden');
+    if (userActions) {
+      userActions.classList.add('visible');
+      userActions.style.display = 'flex';
+    }
+    if (signInBtn) {
+      signInBtn.classList.add('hidden');
+      signInBtn.style.display = 'none';
+    }
     menuSigninPrompt?.classList.add('hidden');
     menuContainer?.classList.remove('hidden');
 
@@ -142,22 +168,56 @@ export function setUserUI(user) {
     if (userEmailDisplay) {
       userEmailDisplay.textContent = label;
       userEmailDisplay.classList.remove('hidden');
+      userEmailDisplay.style.display = 'inline-block';
     }
-    mobileSignIn?.classList.add('hidden');
-    mobileUserActions?.classList.remove('hidden');
+    if (mobileSignIn) {
+      mobileSignIn.classList.add('hidden');
+      mobileSignIn.style.display = 'none';
+    }
+    if (mobileUserActions) {
+      mobileUserActions.classList.remove('hidden');
+      mobileUserActions.style.display = 'flex';
+    }
     if (mobileUserEmail) mobileUserEmail.textContent = label;
-    if (adminPanel) adminPanel.style.display = currentUserRole === 'admin' ? 'block' : 'none';
+
+    const isAdmin = currentUserRole === 'admin';
+    if (adminPanel) adminPanel.style.display = isAdmin ? 'block' : 'none';
+    const adminBadge = document.getElementById('admin-badge');
+    if (adminBadge) {
+      adminBadge.classList.toggle('hidden', !isAdmin);
+      adminBadge.style.display = isAdmin ? 'inline-block' : 'none';
+    }
+    if (isAdmin) {
+      import('./admin-panel.js').then(({ setupAdminDashboard }) => setupAdminDashboard());
+    }
     revealContactDetails(true);
     loadCart();
+    showToast(`Signed in as ${label}`, 'success', 2500);
   } else {
-    userActions?.classList.remove('visible');
-    signInBtn?.classList.remove('hidden');
+    if (userActions) {
+      userActions.classList.remove('visible');
+      userActions.style.display = 'none';
+    }
+    if (signInBtn) {
+      signInBtn.classList.remove('hidden');
+      signInBtn.style.display = '';
+    }
     menuSigninPrompt?.classList.remove('hidden');
     menuContainer?.classList.add('hidden');
-    userEmailDisplay?.classList.add('hidden');
-    mobileSignIn?.classList.remove('hidden');
-    mobileUserActions?.classList.add('hidden');
+    if (userEmailDisplay) {
+      userEmailDisplay.classList.add('hidden');
+      userEmailDisplay.style.display = 'none';
+    }
+    if (mobileSignIn) {
+      mobileSignIn.classList.remove('hidden');
+      mobileSignIn.style.display = 'block';
+    }
+    if (mobileUserActions) {
+      mobileUserActions.classList.add('hidden');
+      mobileUserActions.style.display = 'none';
+    }
     if (adminPanel) adminPanel.style.display = 'none';
+    document.getElementById('admin-badge')?.classList.add('hidden');
     revealContactDetails(false);
     clearCart();
   }
@@ -191,6 +251,14 @@ function revealContactDetails(show) {
   }
 }
 
+function afterLoginNavigate(user) {
+  if (currentUserRole === 'admin') {
+    document.getElementById('admin-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    document.getElementById('menu')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
 export function setupAuth({ onAuthenticated }) {
   onUserChange = onAuthenticated;
   const { auth, googleProvider } = getFirebase();
@@ -209,19 +277,17 @@ export function setupAuth({ onAuthenticated }) {
     setCartUser(user);
 
     if (user) {
-      await checkUserRole(user.uid, user.email);
-      const { db } = getFirebase();
-      if (db && user.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) {
-        await setDoc(
-          doc(db, 'users', user.uid),
-          { email: user.email, role: 'admin', updatedAt: new Date().toISOString() },
-          { merge: true }
-        );
-        currentUserRole = 'admin';
+      try {
+        await checkUserRole(user.uid, user.email);
+        await ensureAdminProfile(user);
+        setUserUI(user);
+        closeModal('auth-modal');
+        onUserChange?.(user);
+      } catch (err) {
+        console.error('[Swadse] Auth state handler error:', err);
+        setUserUI(user);
+        onUserChange?.(user);
       }
-      setUserUI(user);
-      closeModal('auth-modal');
-      onUserChange?.(user);
     } else {
       currentUserRole = 'user';
       setUserUI(null);
@@ -280,37 +346,48 @@ function setupAuthForm(auth) {
 
     try {
       if (authMode === 'signup') {
-        await createUserWithEmailAndPassword(auth, email, password);
-        const user = auth.currentUser;
-        if (user && db) {
-          await setDoc(
-            doc(db, 'users', user.uid),
-            {
-              email,
-              role: ADMIN_EMAILS.includes(email.toLowerCase()) ? 'admin' : 'user',
-              createdAt: new Date().toISOString(),
-            },
-            { merge: true }
-          );
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        if (db && cred.user) {
+          try {
+            await setDoc(
+              doc(db, 'users', cred.user.uid),
+              {
+                email,
+                role: isAdminEmail(email) ? 'admin' : 'user',
+                createdAt: new Date().toISOString(),
+              },
+              { merge: true }
+            );
+          } catch (writeErr) {
+            console.warn('[Swadse] User profile write:', writeErr);
+          }
         }
         setAuthMessage('Account created!', 'success');
       } else {
         await signInWithEmailAndPassword(auth, email, password);
         setAuthMessage('Welcome back!', 'success');
       }
-      setTimeout(() => {
+
+      const user = auth.currentUser;
+      if (user) {
+        await checkUserRole(user.uid, user.email);
+        await ensureAdminProfile(user);
+        setUserUI(user);
         closeModal('auth-modal');
         resetAuthForm();
         setAuthModeUI('signin');
-      }, 800);
+        onUserChange?.(user);
+        afterLoginNavigate(user);
+      }
     } catch (error) {
       const messages = {
         'auth/invalid-credential': 'Invalid email or password.',
         'auth/email-already-in-use': 'Email already registered. Sign in instead.',
         'auth/weak-password': 'Password should be at least 6 characters.',
         'auth/too-many-requests': 'Too many attempts. Try again later.',
+        'auth/configuration-not-found': 'Firebase not configured. Copy config/env.example.js to config/env.js',
       };
-      setAuthMessage(messages[error.code] || 'Authentication failed. Please try again.', 'error');
+      setAuthMessage(messages[error.code] || error.message || 'Authentication failed.', 'error');
     } finally {
       submitBtn.disabled = false;
       submitText?.classList.remove('hidden');
@@ -325,12 +402,14 @@ function setupGoogleSignIn(auth, googleProvider) {
     clearAuthMessage();
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      showToast(`Welcome, ${result.user.displayName || 'there'}!`, 'success');
+      await ensureAdminProfile(result.user);
+      setUserUI(result.user);
       closeModal('auth-modal');
+      afterLoginNavigate(result.user);
     } catch (error) {
       if (error.code === 'auth/popup-closed-by-user') return;
       if (error.code === 'auth/popup-blocked') {
-        setAuthMessage('Popup blocked. Allow popups for this site and try again.', 'error');
+        setAuthMessage('Popup blocked. Allow popups and try again.', 'error');
         return;
       }
       setAuthMessage('Google sign-in failed. Please try again.', 'error');

@@ -1,6 +1,5 @@
 /**
  * Runtime configuration — populated by config/env.js (from .env via npm run build:env).
- * Never put PAYMENT_SECRET_KEY or Firebase Admin credentials here.
  */
 export function getConfig() {
   const c = typeof window !== 'undefined' ? window.__SWADSE_CONFIG__ : {};
@@ -12,19 +11,22 @@ export function getConfig() {
     contactEmail: c.contactEmail || '',
     contactPhone: c.contactPhone || '',
     siteUrl: c.siteUrl || '',
+    adminEmails: c.adminEmails?.length ? c.adminEmails : ['arjunthakurr420@gmail.com'],
   };
 }
 
-export function assertFirebaseConfig() {
+export function getAdminEmails() {
+  return getConfig().adminEmails.map((e) => e.toLowerCase().trim()).filter(Boolean);
+}
+
+export function isFirebaseConfigured() {
   const { firebase } = getConfig();
-  const required = ['apiKey', 'authDomain', 'projectId', 'appId'];
-  const missing = required.filter((k) => !firebase[k]);
-  if (missing.length) {
-    console.warn(
-      '[Swadse] Missing Firebase config:',
-      missing.join(', '),
-      '— copy .env.example to .env and run npm run build:env'
-    );
+  return Boolean(firebase.apiKey && firebase.projectId && firebase.appId);
+}
+
+export function assertFirebaseConfig() {
+  if (!isFirebaseConfigured()) {
+    console.warn('[Swadse] Firebase not configured — copy config/env.example.js to config/env.js');
     return false;
   }
   return true;
